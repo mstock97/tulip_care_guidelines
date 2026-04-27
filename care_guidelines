@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dutch Tulip Care Guide</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Config for Custom Palette -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tulip-bg': '#FAF8F5',      /* Warm neutral light */
+                        'tulip-surface': '#F0EBE1', /* Slightly darker neutral */
+                        'tulip-text': '#3D3835',    /* Soft black/brown */
+                        'tulip-accent': '#D9777F',  /* Muted vintage pink */
+                        'tulip-leaf': '#7A9A74',    /* Muted sage green */
+                        'tulip-soil': '#8C6F5A'     /* Soft brown */
+                    },
+                    fontFamily: {
+                        'serif': ['Lora', 'serif'],
+                        'sans': ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Required Custom Styles for Chart Containers -->
+    <style>
+        body {
+            background-color: #FAF8F5;
+            color: #3D3835;
+            font-family: 'Nunito', sans-serif;
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Lora', serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        /* Hide scrollbar for clean timeline */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .tab-active {
+            border-bottom: 2px solid #D9777F;
+            color: #D9777F;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Chosen Palette: Warm Botanicals (Neutrals #FAF8F5, #F0EBE1 with Accents #D9777F Pink, #7A9A74 Green) -->
+    
+    <!-- Application Structure Plan: 
+         1. Hero/Intro: Welcoming landing setting the context of the gift.
+         2. Annual Care Calendar: An interactive HTML/Tailwind timeline serving as the requested "calendar". Users click seasons/months to reveal tasks.
+         3. Planting Fundamentals: Dashboard-style section using Chart.js to visualize depth, spacing, and soil needs.
+         4. Aftercare & Maintenance: Interactive tabs to handle post-bloom care, which is the most common failure point for beginners. 
+         This structure translates the chronological and technical needs of bulb care into an explorable, friendly digital format. -->
+         
+    <!-- Visualization & Content Choices: 
+         - Calendar: HTML flex-row with JS click events -> Goal: Timeline -> Method: Interactive text updates -> Justification: No SVG allowed, HTML grid is robust and accessible.
+         - Soil Comp: Chart.js Doughnut -> Goal: Proportions -> Method: Canvas Chart -> Justification: Visualizes sandy/loamy requirements perfectly.
+         - Depth/Spacing: Chart.js Bar -> Goal: Compare metrics -> Method: Canvas Chart -> Justification: Shows how deep to dig vs how far to space visually.
+         - Care Instructions: Interactive Tabs -> Goal: Organize steps -> Method: JS hide/show -> Justification: Keeps page clean while providing deep dives. -->
+         
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-tulip-bg/90 backdrop-blur-md border-b border-tulip-surface">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <span class="text-2xl">🌷</span>
+                    <span class="font-serif font-semibold text-lg text-tulip-text">Dutch Tulip Care</span>
+                </div>
+                <div class="hidden sm:flex space-x-8">
+                    <a href="#calendar" class="text-tulip-text hover:text-tulip-accent transition">Care Calendar</a>
+                    <a href="#planting" class="text-tulip-text hover:text-tulip-accent transition">Planting Basics</a>
+                    <a href="#aftercare" class="text-tulip-text hover:text-tulip-accent transition">Aftercare</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="py-16 sm:py-24 px-4 text-center max-w-4xl mx-auto">
+        <div class="inline-block p-3 rounded-full bg-tulip-surface mb-6 text-4xl shadow-sm">
+            🇳🇱 ✈️ 🌷
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-serif text-tulip-text mb-6">A Gift from the Netherlands</h1>
+        <p class="text-lg sm:text-xl text-tulip-text/80 max-w-2xl mx-auto leading-relaxed">
+            Congratulations on receiving authentic Dutch Tulip bulbs! Tulips are resilient, beautiful, and surprisingly easy to grow if you follow the rhythm of the seasons. This interactive guide will walk you through exactly what to do, and when to do it, to ensure a spectacular spring display.
+        </p>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-5xl mx-auto px-4 pb-24 space-y-24">
+
+        <!-- SECTION 1: Annual Calendar -->
+        <section id="calendar" class="scroll-mt-24">
+            <div class="mb-8 text-center sm:text-left">
+                <h2 class="text-3xl font-serif text-tulip-text mb-4">The Annual Care Calendar</h2>
+                <p class="text-md text-tulip-text/80 max-w-3xl">
+                    Tulip care is highly seasonal. They require a period of cold dormancy to trigger their spring bloom. Use this interactive timeline to see what actions you should take throughout the year. Click on a season to reveal the specific gardening tasks required.
+                </p>
+            </div>
+
+            <!-- Interactive Timeline UI -->
+            <div class="bg-white rounded-2xl shadow-sm border border-tulip-surface overflow-hidden">
+                <div class="flex flex-nowrap overflow-x-auto no-scrollbar border-b border-tulip-surface" id="timeline-buttons">
+                    <button onclick="updateCalendar('fall')" class="flex-1 min-w-[120px] py-4 px-2 text-center transition hover:bg-tulip-bg font-semibold tab-active border-r border-tulip-surface" id="btn-fall">
+                        <span class="block text-2xl mb-1">🍂</span> Autumn<br><span class="text-xs font-normal text-gray-500">Sep - Nov</span>
+                    </button>
+                    <button onclick="updateCalendar('winter')" class="flex-1 min-w-[120px] py-4 px-2 text-center transition hover:bg-tulip-bg text-gray-500 border-r border-tulip-surface" id="btn-winter">
+                        <span class="block text-2xl mb-1">❄️</span> Winter<br><span class="text-xs font-normal text-gray-500">Dec - Feb</span>
+                    </button>
+                    <button onclick="updateCalendar('spring')" class="flex-1 min-w-[120px] py-4 px-2 text-center transition hover:bg-tulip-bg text-gray-500 border-r border-tulip-surface" id="btn-spring">
+                        <span class="block text-2xl mb-1">🌱</span> Spring<br><span class="text-xs font-normal text-gray-500">Mar - May</span>
+                    </button>
+                    <button onclick="updateCalendar('summer')" class="flex-1 min-w-[120px] py-4 px-2 text-center transition hover:bg-tulip-bg text-gray-500" id="btn-summer">
+                        <span class="block text-2xl mb-1">☀️</span> Summer<br><span class="text-xs font-normal text-gray-500">Jun - Aug</span>
+                    </button>
+                </div>
+
+                <!-- Timeline Content Area -->
+                <div class="p-6 sm:p-10 bg-white min-h-[300px] flex flex-col justify-center" id="calendar-content">
+                    <!-- Default content (Fall) loaded via JS on init -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 2: Planting Fundamentals -->
+        <section id="planting" class="scroll-mt-24">
+            <div class="mb-8 text-center sm:text-left">
+                <h2 class="text-3xl font-serif text-tulip-text mb-4">Planting Fundamentals</h2>
+                <p class="text-md text-tulip-text/80 max-w-3xl">
+                    Getting the bulbs into the ground correctly is 90% of the work. Tulips need excellent drainage so they don't rot over the winter, and they must be planted deep enough to survive freezing surface temperatures. Review the metrics below before heading out to the garden.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Ideal Depth & Spacing Chart -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-tulip-surface">
+                    <h3 class="text-xl font-serif mb-2 flex items-center gap-2"><span class="text-tulip-soil">📏</span> Depth & Spacing</h3>
+                    <p class="text-sm text-gray-600 mb-6">Always plant with the pointy side facing UP.</p>
+                    <div class="chart-container">
+                        <canvas id="plantingChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Soil Composition Chart -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-tulip-surface">
+                    <h3 class="text-xl font-serif mb-2 flex items-center gap-2"><span class="text-tulip-leaf">🪨</span> Ideal Soil Mix</h3>
+                    <p class="text-sm text-gray-600 mb-6">Well-draining soil is critical to prevent bulb rot.</p>
+                    <div class="chart-container">
+                        <canvas id="soilChart"></canvas>
+                    </div>
+                    <div class="mt-4 p-4 bg-tulip-bg rounded-lg text-sm border border-tulip-surface">
+                        <strong>Pro Tip:</strong> If you have heavy clay soil, mix in coarse sand and compost before planting, or consider planting in raised beds or pots!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 3: Aftercare & Maintenance -->
+        <section id="aftercare" class="scroll-mt-24">
+            <div class="mb-8 text-center sm:text-left">
+                <h2 class="text-3xl font-serif text-tulip-text mb-4">Crucial Aftercare</h2>
+                <p class="text-md text-tulip-text/80 max-w-3xl">
+                    What you do <em>after</em> the beautiful flowers fade determines whether your bulbs will bloom again next year. Many beginners make the mistake of cutting down the plant too early. Explore the steps below to guarantee a perennial performance.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-tulip-surface flex flex-col md:flex-row overflow-hidden">
+                <!-- Vertical Tabs -->
+                <div class="w-full md:w-1/3 bg-tulip-surface/30 p-4 border-b md:border-b-0 md:border-r border-tulip-surface flex md:flex-col gap-2 overflow-x-auto no-scrollbar">
+                    <button onclick="updateCareTab('deadheading')" id="tab-deadheading" class="care-tab text-left px-4 py-3 rounded-lg bg-white shadow-sm font-semibold text-tulip-text border-l-4 border-tulip-accent transition whitespace-nowrap md:whitespace-normal">
+                        ✂️ Deadheading
+                    </button>
+                    <button onclick="updateCareTab('foliage')" id="tab-foliage" class="care-tab text-left px-4 py-3 rounded-lg hover:bg-white/60 text-gray-600 border-l-4 border-transparent transition whitespace-nowrap md:whitespace-normal">
+                        🍃 Letting Leaves Yellow
+                    </button>
+                    <button onclick="updateCareTab('watering')" id="tab-watering" class="care-tab text-left px-4 py-3 rounded-lg hover:bg-white/60 text-gray-600 border-l-4 border-transparent transition whitespace-nowrap md:whitespace-normal">
+                        💧 Watering Strategy
+                    </button>
+                    <button onclick="updateCareTab('storage')" id="tab-storage" class="care-tab text-left px-4 py-3 rounded-lg hover:bg-white/60 text-gray-600 border-l-4 border-transparent transition whitespace-nowrap md:whitespace-normal">
+                        📦 Digging & Storing
+                    </button>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="w-full md:w-2/3 p-6 sm:p-8 flex flex-col justify-center" id="care-content">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Summary/Outro -->
+        <section class="text-center bg-tulip-accent/10 p-8 sm:p-12 rounded-3xl border border-tulip-accent/20">
+            <div class="text-5xl mb-4">💝</div>
+            <h3 class="text-2xl font-serif text-tulip-text mb-4">Enjoy Your Blooms!</h3>
+            <p class="max-w-2xl mx-auto text-tulip-text/80">
+                Patience is the secret ingredient to growing tulips. Plant them well this autumn, let the winter cold do its magic, and you will be rewarded with a spectacular slice of the Netherlands in your own backyard next spring.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-tulip-surface py-8 text-center text-sm text-gray-500">
+        <p>Created for optimal gardening success. 🌷</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // --- DATA STORAGE ---
+        
+        // Calendar Content Data
+        const calendarData = {
+            fall: {
+                title: "Autumn: Time to Plant",
+                icon: "🍂",
+                color: "text-orange-600",
+                bg: "bg-orange-50",
+                tasks: [
+                    "Wait until night temperatures consistently drop below 50°F (10°C).",
+                    "Choose a spot with full or afternoon sun.",
+                    "Plant bulbs 6-8 inches deep, pointy end facing up.",
+                    "Water thoroughly once after planting to wake up the bulb."
+                ]
+            },
+            winter: {
+                title: "Winter: The Chilling Period",
+                icon: "❄️",
+                color: "text-blue-500",
+                bg: "bg-blue-50",
+                tasks: [
+                    "Do nothing! The bulbs are establishing roots.",
+                    "Tulips require 12-14 weeks of temperatures below 45°F (7°C) to bloom.",
+                    "Do not water them during winter to prevent freezing and rotting.",
+                    "If you live in a warm climate, you may need to 'pre-chill' bulbs in a fridge before planting."
+                ]
+            },
+            spring: {
+                title: "Spring: Growth & Bloom",
+                icon: "🌱",
+                color: "text-green-600",
+                bg: "bg-green-50",
+                tasks: [
+                    "Watch for green shoots emerging from the soil.",
+                    "Begin watering if the spring is dry (about 1 inch of water per week).",
+                    "Enjoy the blooms! They typically last 1-2 weeks depending on weather.",
+                    "Protect emerging shoots from deer and rabbits if necessary."
+                ]
+            },
+            summer: {
+                title: "Summer: Energy Regeneration",
+                icon: "☀️",
+                color: "text-yellow-600",
+                bg: "bg-yellow-50",
+                tasks: [
+                    "Snap off the flower head once petals fall (Deadheading).",
+                    "CRITICAL: Leave the green stem and leaves intact. Do not cut them.",
+                    "Allow foliage to turn completely yellow and die back naturally (takes ~6 weeks). This recharges the bulb for next year.",
+                    "Once leaves are dead, cut them to ground level. Stop watering entirely."
+                ]
+            }
+        };
+
+        // Aftercare Content Data
+        const careData = {
+            deadheading: {
+                title: "Deadheading",
+                icon: "✂️",
+                text: "As soon as the tulip petals begin to fall off and the flower looks faded, pinch or cut off the seed pod at the top of the stem. <br><br><strong>Why?</strong> If you leave the flower head, the plant wastes precious energy trying to produce seeds. By removing it, you redirect all that energy back down into the bulb to grow a bigger flower next year."
+            },
+            foliage: {
+                title: "Letting Leaves Yellow",
+                icon: "🍃",
+                text: "This is the most important rule of tulip care: <strong>Do not cut the green leaves.</strong><br><br>Even after the flower is gone, the leaves act as solar panels. They photosynthesize the spring sunlight and send carbohydrates down into the bulb, storing energy for next winter's dormancy and spring's bloom. Wait until the leaves turn completely yellow/brown and detach easily from the soil."
+            },
+            watering: {
+                title: "Watering Strategy",
+                icon: "💧",
+                text: "<strong>Fall:</strong> Water once immediately after planting.<br><strong>Winter:</strong> Do not water.<br><strong>Spring:</strong> Water weekly only if it doesn't rain. Tulips hate 'wet feet' (soggy soil).<br><strong>Summer:</strong> Stop watering completely once the leaves die back. The bulbs prefer baking in warm, dry soil during summer dormancy."
+            },
+            storage: {
+                title: "Digging & Storing",
+                icon: "📦",
+                text: "Most modern hybrid tulips act as annuals and might not bloom as robustly the second year. If you want to guarantee perfect blooms, you can treat them as annuals and plant fresh bulbs. <br><br>If you want to save them: Once the foliage dies in summer, dig the bulbs up, brush off the dirt, and store them in a cool, dry, dark place (like a mesh bag in a garage) until fall planting time."
+            }
+        };
+
+        // --- CORE LOGIC & INTERACTION ---
+
+        // 1. Calendar Logic
+        function updateCalendar(season) {
+            // Update buttons
+            const seasons = ['fall', 'winter', 'spring', 'summer'];
+            seasons.forEach(s => {
+                const btn = document.getElementById(`btn-${s}`);
+                if (s === season) {
+                    btn.classList.add('tab-active');
+                    btn.classList.remove('text-gray-500');
+                } else {
+                    btn.classList.remove('tab-active');
+                    btn.classList.add('text-gray-500');
+                }
+            });
+
+            // Update content
+            const data = calendarData[season];
+            const contentDiv = document.getElementById('calendar-content');
+            
+            let tasksHtml = data.tasks.map(task => `<li class="mb-3 flex items-start"><span class="mr-2 mt-1 ${data.color}">❖</span> <span>${task}</span></li>`).join('');
+
+            contentDiv.innerHTML = `
+                <div class="flex items-center gap-4 mb-6 transition-all duration-300">
+                    <div class="text-5xl ${data.bg} p-4 rounded-2xl">${data.icon}</div>
+                    <h3 class="text-2xl font-serif text-tulip-text">${data.title}</h3>
+                </div>
+                <ul class="text-lg text-gray-700 ml-2">
+                    ${tasksHtml}
+                </ul>
+            `;
+        }
+
+        // 2. Aftercare Tabs Logic
+        function updateCareTab(tabId) {
+            // Update Tab UI
+            const tabs = ['deadheading', 'foliage', 'watering', 'storage'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tabId) {
+                    btn.classList.add('bg-white', 'shadow-sm', 'border-tulip-accent', 'text-tulip-text', 'font-semibold');
+                    btn.classList.remove('hover:bg-white/60', 'text-gray-600', 'border-transparent');
+                } else {
+                    btn.classList.remove('bg-white', 'shadow-sm', 'border-tulip-accent', 'text-tulip-text', 'font-semibold');
+                    btn.classList.add('hover:bg-white/60', 'text-gray-600', 'border-transparent');
+                }
+            });
+
+            // Update Content UI
+            const data = careData[tabId];
+            const contentDiv = document.getElementById('care-content');
+            
+            contentDiv.innerHTML = `
+                <div class="text-4xl mb-4">${data.icon}</div>
+                <h3 class="text-2xl font-serif text-tulip-text mb-4">${data.title}</h3>
+                <p class="text-lg text-gray-700 leading-relaxed">${data.text}</p>
+            `;
+        }
+
+        // --- CHART INITIALIZATION ---
+        
+        function initCharts() {
+            // Global Chart.js defaults
+            Chart.defaults.font.family = "'Nunito', sans-serif";
+            Chart.defaults.color = '#5A524D';
+            Chart.defaults.plugins.tooltip.padding = 10;
+            Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(61, 56, 53, 0.9)';
+
+            // 1. Planting Bar Chart
+            const ctxPlanting = document.getElementById('plantingChart').getContext('2d');
+            new Chart(ctxPlanting, {
+                type: 'bar',
+                data: {
+                    labels: ['Planting Depth', 'Spacing Between Bulbs'],
+                    datasets: [{
+                        label: 'Inches',
+                        data: [7, 5], // Average 6-8 depth, 4-6 spacing
+                        backgroundColor: ['#8C6F5A', '#D9777F'],
+                        borderRadius: 8,
+                        barThickness: 60
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if(context.dataIndex === 0) return ' 6 to 8 inches deep';
+                                    if(context.dataIndex === 1) return ' 4 to 6 inches apart';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Inches' },
+                            max: 10
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            // 2. Soil Composition Doughnut Chart
+            const ctxSoil = document.getElementById('soilChart').getContext('2d');
+            new Chart(ctxSoil, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sand (Drainage)', 'Loam/Topsoil', 'Compost (Nutrients)'],
+                    datasets: [{
+                        data: [40, 40, 20],
+                        backgroundColor: ['#E6D5B8', '#8C6F5A', '#594A42'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 20, usePointStyle: true }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // Load default interactive states
+            updateCalendar('fall');
+            updateCareTab('deadheading');
+            
+            // Render Charts
+            initCharts();
+        });
+
+    </script>
+</body>
+</html>
