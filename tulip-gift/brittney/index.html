@@ -16,77 +16,109 @@
       --card-bg:     #ffffff;
       --card-border: #f9c8e5;
     }
-
     body {
       background: var(--bg);
       background-image:
-        radial-gradient(ellipse at 8% 0%, #ffdded 0%, transparent 55%),
+        radial-gradient(ellipse at 8%  0%,   #ffdded 0%, transparent 55%),
         radial-gradient(ellipse at 92% 100%, #fce4f4 0%, transparent 55%);
     }
   </style>
 </head>
 <body>
 
-  <div class="petal-bg"></div>
+  <div class="petal-bg" id="petalBg"></div>
 
-  <!-- HERO -->
   <section class="hero">
-    <span class="tag-pill">🎉 Happy Birthday!</span>
-    <span class="hero-emoji">🎀</span>
-    <h1><em>Brittney,</em><br>it's your day!</h1>
-    <p class="subtitle">We got you something extra special this year 🌷</p>
+    <p class="prompt-text" id="promptText">
+      You have a special gift<br>waiting for you… 🎀
+    </p>
   </section>
 
-  <!-- PERSONAL MESSAGE -->
-  <div class="card">
-    <div class="card-label">A note from Matt &amp; Amanda</div>
-    <p class="message">
-      Brittney!! HAPPY BIRTHDAY!! 🎉🎀 Okay, we're very excited about this
-      gift, and we hope you will be too — because we went international for
-      your birthday this year. That's right. The Netherlands. For you.
-      <br /><br />
-      We picked out some truly gorgeous tulip bulbs because honestly, you
-      deserve something that shows up and shows out every single year. That's
-      kind of your thing, right? Just consistently bringing the energy,
-      the love, and the good vibes — and now you've got flowers to match.
-      <br /><br />
-      Wishing you the best birthday yet. We love you so much! 🌷
-    </p>
-    <p class="signature">— Matt &amp; Amanda 💗</p>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;margin-bottom:8px;">
+    <div class="gift-wrapper" id="giftWrapper" onclick="openBox()">
+      <div class="shockwave" id="sw1"></div>
+      <div class="shockwave shockwave2" id="sw2"></div>
+      <svg class="box-svg" id="boxSvg" viewBox="0 0 220 210" xmlns="http://www.w3.org/2000/svg">
+        <!-- Hot pink box body -->
+        <rect x="15" y="102" width="190" height="100" rx="8" fill="#e91e8c"/>
+        <rect x="15" y="102" width="190" height="100" rx="8" fill="none" stroke="#b5006e" stroke-width="1.5"/>
+        <rect x="97"  y="102" width="26" height="100" fill="#f5c518" opacity="0.9"/>
+        <rect x="15"  y="145" width="190" height="14"  fill="#f5c518" opacity="0.9"/>
+        <rect x="23"  y="110" width="55"  height="84"  rx="3" fill="white" opacity="0.06"/>
+        <g id="lid-group">
+          <rect x="8"   y="70" width="204" height="40" rx="8" fill="#c0006e"/>
+          <rect x="8"   y="70" width="204" height="40" rx="8" fill="none" stroke="#8a004e" stroke-width="1.5"/>
+          <rect x="96"  y="70" width="28"  height="40" fill="#f5c518" opacity="0.9"/>
+          <rect x="16"  y="77" width="65"  height="25" rx="3" fill="white" opacity="0.06"/>
+          <ellipse cx="82"  cy="58" rx="30" ry="16" fill="#f5c518" transform="rotate(-22 82 58)"/>
+          <ellipse cx="82"  cy="58" rx="18" ry="9"  fill="#e8b510" transform="rotate(-22 82 58)"/>
+          <ellipse cx="138" cy="58" rx="30" ry="16" fill="#f5c518" transform="rotate(22 138 58)"/>
+          <ellipse cx="138" cy="58" rx="18" ry="9"  fill="#e8b510" transform="rotate(22 138 58)"/>
+          <ellipse cx="110" cy="62" rx="15" ry="12" fill="#f5c518"/>
+          <ellipse cx="110" cy="62" rx="8"  ry="7"  fill="#d4a012"/>
+          <path d="M100 70 Q90 86 82 102"  stroke="#f5c518" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <path d="M120 70 Q130 86 138 102" stroke="#f5c518" stroke-width="8" fill="none" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+    <div class="click-hint" id="clickHint">Tap to open your gift ✨</div>
+    <div class="reveal-msg" id="revealMsg">
+      <h2>Happy Birthday,<br><em>Brittney!</em> 🎀</h2>
+      <p>We went international for your birthday this year! 🌷</p>
+    </div>
   </div>
 
-  <!-- GIFT REVEAL -->
-  <div class="gift-box">
-    <div class="gift-reveal-card">
-      <span class="gift-icon">🎁</span>
-      <h2>Your Gift: Dutch Tulip Bulbs!</h2>
-      <p>
-        Straight from the Netherlands — the tulip capital of the world.<br />
-        Premium bulbs hand-selected just for you, ready to fill your garden<br />
-        with gorgeous color every spring.
+  <div class="post-reveal" id="postReveal">
+    <div class="card" style="margin-top:32px;">
+      <div class="card-label">A note from Matt &amp; Amanda</div>
+      <p class="message">
+        Brittney!! HAPPY BIRTHDAY!! 🎉🎀 Okay, we're very excited about this
+        gift, and we hope you will be too — because we went international for
+        your birthday this year. That's right. The Netherlands. For you.
+        <br /><br />
+        We picked out some truly gorgeous tulip bulbs because honestly, you
+        deserve something that shows up and shows out every single year. That's
+        kind of your thing, right? Just consistently bringing the energy,
+        the love, and the good vibes — and now you've got flowers to match.
+        <br /><br />
+        Wishing you the best birthday yet. We love you so much! 🌷
       </p>
+      <p class="signature">— Matt &amp; Amanda 💗</p>
     </div>
-  </div>
-
-  <!-- ORIGIN BADGE -->
-  <div class="origin-badge">
-    <span class="origin-flag">🇳🇱</span>
-    <div class="origin-text">
-      <strong>Sourced from the Netherlands</strong>
-      <span>Home of the world's finest tulip bulbs since the 1600s</span>
+    <div class="gift-box">
+      <div class="gift-reveal-card">
+        <span class="gift-icon">🌷</span>
+        <h2>Dutch Tulip Bulbs from the Netherlands!</h2>
+        <p>Premium bulbs hand-selected just for you, ready to fill your garden with gorgeous color every spring.</p>
+      </div>
     </div>
-  </div>
-
-  <!-- CTA -->
-  <div class="cta-wrap">
-    <a href="../pages/care-guide.html" class="cta-btn">
-      <span class="btn-emoji">🌱</span>
-      See Your Tulip Care Guide
-    </a>
+    <div class="origin-badge">
+      <span class="origin-flag">🇳🇱</span>
+      <div class="origin-text">
+        <strong>Sourced from the Netherlands</strong>
+        <span>Home of the world's finest tulip bulbs since the 1600s</span>
+      </div>
+    </div>
+    <div class="cta-wrap">
+      <a href="../pages/care-guide.html" class="cta-btn">
+        <span class="btn-emoji">🌱</span>
+        See Your Tulip Care Guide
+      </a>
+    </div>
   </div>
 
   <footer>Made with love by Matt &amp; Amanda 🌷</footer>
 
-  <script src="../js/petals.js"></script>
+  <script>
+    window.CONFETTI_COLORS = ['#e91e8c','#f5c518','#b5006e','#ffdded','#fff4a0','#ffadd8'];
+  </script>
+  <script src="../js/reveal.js"></script>
+  <script>
+    var _base = window.openBox;
+    window.openBox = function() {
+      _base();
+      setTimeout(function() { document.getElementById('postReveal').classList.add('show'); }, 1300);
+    };
+  </script>
 </body>
 </html>
