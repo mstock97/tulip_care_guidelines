@@ -7,33 +7,24 @@
   <link rel="stylesheet" href="../css/styles.css" />
   <style>
     :root {
-      --bg:          #fff0f7;
-      --heading:     #b5006e;
-      --text:        #2e0a20;
-      --text-muted:  #b06090;
-      --accent:      #e91e8c;
-      --accent-text: #fff;
-      --card-bg:     #ffffff;
-      --card-border: #f9c8e5;
+      --bg:#fff0f7;--heading:#b5006e;--text:#2e0a20;
+      --text-muted:#b06090;--accent:#e91e8c;--accent-text:#fff;
+      --card-bg:#ffffff;--card-border:#f9c8e5;
     }
     body {
-      background: var(--bg);
+      background:var(--bg);
       background-image:
         radial-gradient(ellipse at 10% 0%,  #ffdded 0%, transparent 55%),
         radial-gradient(ellipse at 90% 100%, #fce4f4 0%, transparent 55%);
     }
+    .tulip-card { transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.34,1.56,0.64,1); }
   </style>
 </head>
 <body>
-
   <div class="petal-bg" id="petalBg"></div>
-
   <section class="hero">
-    <p class="prompt-text" id="promptText">
-      You have a special gift<br>waiting for you… 🎀
-    </p>
+    <p class="prompt-text" id="promptText">You have a special gift<br>waiting for you… 🎀</p>
   </section>
-
   <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;margin-bottom:8px;background:none;">
     <div class="gift-wrapper" id="giftWrapper" onclick="openBox()">
       <div class="shockwave" id="sw1"></div>
@@ -70,8 +61,7 @@
   <div class="post-reveal" id="postReveal">
     <div class="card" style="margin-top:32px;">
       <div class="card-label">A note from Matt &amp; Amanda</div>
-      <p class="message">
-        Brittney!! HAPPY BIRTHDAY!! 🎉🎀 Okay, we're very excited about this
+      <p class="message">Brittney!! HAPPY BIRTHDAY!! 🎉🎀 Okay, we're very excited about this
         gift, and we hope you will be too — because we went international for
         your birthday this year. That's right. The Netherlands. For you.
         <br /><br />
@@ -80,19 +70,17 @@
         kind of your thing, right? Just consistently bringing the energy,
         the love, and the good vibes — and now you've got flowers to match.
         <br /><br />
-        Wishing you the best birthday yet. We love you so much! 🌷
-      </p>
+        Wishing you the best birthday yet. We love you so much! 🌷</p>
       <p class="signature">— Matt &amp; Amanda 💗</p>
     </div>
 
     <div class="gift-box">
       <div class="gift-reveal-card">
         <div class="gift-reveal-header">
-          <div id="tulipIllustrations" style="display:flex;justify-content:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;min-height:90px;"></div>
           <h2>Dutch Tulip Bulbs from the Netherlands!</h2>
-          <p>Premium bulbs hand-selected just for you — 99 blooms of joy arriving every spring.</p>
+          <p>Premium bulbs hand-selected just for you — gorgeous color every spring.</p>
         </div>
-        <div id="varietyGrid" style="margin-top:4px;"></div>
+        <div id="varietyGrid" style="background:rgba(255,255,255,0.96);border-radius:0 0 var(--radius) var(--radius);padding:clamp(16px,4vw,28px);"></div>
       </div>
     </div>
 
@@ -125,22 +113,16 @@
     window.openBox = function() {
       _base();
       setTimeout(function() {
-        var pr = document.getElementById('postReveal');
-        pr.classList.add('show');
-
-        // Populate tulip illustrations row
-        var ilRow = document.getElementById('tulipIllustrations');
-        var varieties = window.TULIP_VARIETIES[window.PAGE_KEY] || [];
-        varieties.forEach(function(v) {
-          var el = window.makeTulipElement(v, 72);
-          el.title = v.name;
-          ilRow.appendChild(el);
-        });
-
-        // Populate variety grid
+        // Build variety grid first (cards start hidden via JS in reveal.js)
         var grid = document.getElementById('varietyGrid');
         grid.innerHTML = window.buildVarietyGrid(window.PAGE_KEY);
-      }, 1300);
+        // Mark cards for animation
+        grid.querySelectorAll('.tulip-card').forEach(function(c) {
+          c.style.opacity = '0';
+          c.style.transform = 'translateY(22px) scale(0.92)';
+        });
+        document.getElementById('postReveal').classList.add('show');
+      }, 1200);
     };
   </script>
 </body>
