@@ -53,17 +53,24 @@ body {
 }
 
 /* ── GIFT BOX WRAPPER ── */
+/* ── GIFT BOX WRAPPER — no background, no radius, no padding ── */
 .gift-wrapper {
   position: relative;
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   z-index: 1;
+  background: none;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  display: inline-block;
+  line-height: 0;
 }
 
+/* Hover & active animate the SVG only — wrapper stays invisible */
 .gift-wrapper:not([data-opened]):hover .box-svg {
-  animation: wiggle 0.45s ease;
-  transform: scale(1.04);
+  animation: wiggle 0.45s ease forwards;
 }
 .gift-wrapper:active .box-svg { transform: scale(0.96); }
 
@@ -79,6 +86,7 @@ body {
   display: block;
   transition: transform 0.15s ease;
   filter: drop-shadow(0 12px 30px rgba(0,0,0,0.22));
+  background: none;
 }
 
 /* ── LID FLY-OFF ── */
@@ -93,8 +101,8 @@ body {
   100% { transform: rotate(-90deg) translate(-160px,-280px); opacity: 0; }
 }
 
-/* ── BOX SHAKE ── */
-.gift-wrapper.shake { animation: boxShake 0.35s ease; }
+/* ── BOX SHAKE — on the SVG, not the wrapper ── */
+.gift-wrapper.shake .box-svg { animation: boxShake 0.35s ease; }
 @keyframes boxShake {
   0%,100% { transform: translateX(0); }
   15%     { transform: translateX(-8px) rotate(-3deg); }
@@ -286,9 +294,8 @@ body {
   background: var(--accent);
   color: var(--accent-text);
   border-radius: var(--radius);
-  padding: clamp(24px, 5vw, 44px);
-  position: relative;
   overflow: hidden;
+  position: relative;
 }
 
 .gift-reveal-card::before {
@@ -299,28 +306,41 @@ body {
     45deg, transparent, transparent 8px,
     rgba(255,255,255,0.06) 8px, rgba(255,255,255,0.06) 16px
   );
+  pointer-events: none;
+}
+
+.gift-reveal-header {
+  padding: clamp(24px, 5vw, 40px) clamp(24px, 5vw, 40px) 20px;
+  text-align: center;
+  position: relative;
 }
 
 .gift-icon {
   font-size: clamp(2.5rem, 7vw, 4rem);
   margin-bottom: 12px;
   display: block;
-  position: relative;
 }
 
 .gift-reveal-card h2 {
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 5vw, 2.4rem);
-  margin-bottom: 10px;
+  font-size: clamp(1.3rem, 4vw, 2rem);
+  margin-bottom: 8px;
   position: relative;
 }
 
 .gift-reveal-card p {
-  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  font-size: clamp(0.9rem, 2.5vw, 1.05rem);
   font-weight: 600;
   opacity: 0.9;
   position: relative;
   line-height: 1.6;
+}
+
+#varietyGrid {
+  background: rgba(255,255,255,0.96);
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: clamp(16px, 4vw, 28px);
+  position: relative;
 }
 
 /* ── ORIGIN BADGE ── */
