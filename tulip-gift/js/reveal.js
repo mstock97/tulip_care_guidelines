@@ -23,7 +23,7 @@
     });
   }
 
-  /* ── Lid: explodes off and flies out of the viewport forever ── */
+  /* ── Lid: explodes off and flies out of the viewport ── */
   function detachLid() {
     var svgEl  = document.getElementById('boxSvg');
     var lidGrp = document.getElementById('lid-group');
@@ -34,7 +34,6 @@
     var lidWidth = svgRect.width * (204 / 220);
     var lidH     = svgRect.height * (110 / 210);
 
-    // Build a fixed-position SVG clone of just the lid
     var clone = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     clone.setAttribute('viewBox', '0 0 220 120');
     clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
@@ -54,18 +53,11 @@
     lc.removeAttribute('id');
     clone.appendChild(lc);
     document.body.appendChild(clone);
-    lidGrp.style.opacity = '0'; // hide original
+    lidGrp.style.opacity = '0';
 
-    // Physics: lid shoots up-right with spin, flies off screen entirely
-    var x   = 0;   // offset from starting position
-    var y   = 0;
-    var vx  = 18;  // rightward drift
-    var vy  = -32; // strong upward launch
-    var rot = 0;
-    var rs  = 14;  // fast spin
+    var x   = 0, y = 0, vx = 18, vy = -32, rot = 0, rs = 14;
     var gravity = 1.2;
-    var frame = 0;
-    var maxFrames = 200;
+    var frame = 0, maxFrames = 200;
 
     function animLid() {
       frame++;
@@ -73,11 +65,10 @@
       x   += vx;
       y   += vy;
       rot += rs;
-      vx  *= 0.99;  // slight air resistance
+      vx  *= 0.99;
 
       clone.style.transform = 'translate(' + x + 'px,' + y + 'px) rotate(' + rot + 'deg)';
 
-      // Fade out as it flies off screen
       var traveled = Math.sqrt(x*x + y*y);
       if (traveled > 300) {
         var fade = Math.max(0, 1 - (traveled - 300) / 200);
@@ -98,7 +89,7 @@
       }
     }
 
-    requestAnimationFrame(animLid); // FIX: was incorrectly called as (function anim)(0)
+    requestAnimationFrame(animLid);
   }
 
   /* ── Physics tulip launcher ── */
@@ -180,14 +171,13 @@
     }
   }
 
-  /* ── Card pop-in — called AFTER grid is built ── */
+  /* ── Card pop-in ── */
   window.animateCards = function() {
     var cards = document.querySelectorAll('.tulip-card');
     cards.forEach(function(card, i) {
       card.style.opacity   = '0';
       card.style.transform = 'translateY(20px) scale(0.92)';
       card.style.transition = 'none';
-      // Force reflow so transition fires
       void card.offsetWidth;
       setTimeout(function() {
         card.style.transition = 'opacity 0.45s ease, transform 0.45s cubic-bezier(0.34,1.56,0.64,1)';
@@ -207,13 +197,11 @@
 
     var confettiColors = window.CONFETTI_COLORS || ['#e85d3a','#f5c518','#b03a2e','#ffd6cc','#fff4a0','#ff8c6b'];
 
-    // Hide prompt elements
     ['promptText', 'clickHint'].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) el.classList.add('hidden');
     });
 
-    // Shockwaves
     setTimeout(function() {
       var s1 = document.getElementById('sw1');
       var s2 = document.getElementById('sw2');
@@ -221,28 +209,22 @@
       if (s2) s2.classList.add('pop');
     }, 80);
 
-    // Lid blasts off
     setTimeout(detachLid, 120);
-
-    // Tulips launch
     launchTulips();
 
-    // Two confetti waves
     setTimeout(function() { spawnConfetti(confettiColors); }, 200);
     setTimeout(function() { spawnConfetti(confettiColors); }, 480);
-
-    // Background petals start floating
     setTimeout(activatePetals, 600);
 
-    // Reveal message
     setTimeout(function() {
       var r = document.getElementById('revealMsg');
       if (r) r.classList.add('show');
     }, 900);
 
-    // Post-reveal content: build grid, show section, animate cards
-    // NOTE: page inline script wraps openBox and calls these — this base version
-    // provides the timing hook via window.animateCards
+    // Post-reveal: page scripts wrap openBox and call buildVarietyGrid + animateCards.
+    // The .show class switches display:none → display:flex and triggers the fade-in.
+    // We need a brief rAF after adding .show so the browser registers the display
+    // change before the opacity/transform transition fires.
   };
 
 })();
