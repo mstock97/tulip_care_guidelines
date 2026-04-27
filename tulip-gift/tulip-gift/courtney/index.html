@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday, Courtney! 🎉</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    :root {
+      --bg:          #f0fff8;
+      --heading:     #0d7a5f;
+      --text:        #0d2e26;
+      --text-muted:  #4a9e88;
+      --accent:      #f5b800;
+      --accent-text: #1a1a00;
+      --card-bg:     #ffffff;
+      --card-border: #b6f0de;
+    }
+    body {
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 5%  0%,   #d0faea 0%, transparent 55%),
+        radial-gradient(ellipse at 95% 100%, #fef3c0 0%, transparent 55%);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="petal-bg" id="petalBg"></div>
+
+  <section class="hero">
+    <p class="prompt-text" id="promptText">
+      You have a special gift<br>waiting for you… 🎀
+    </p>
+  </section>
+
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;margin-bottom:8px;background:none;">
+    <div class="gift-wrapper" id="giftWrapper" onclick="openBox()">
+      <div class="shockwave" id="sw1"></div>
+      <div class="shockwave shockwave2" id="sw2"></div>
+      <svg class="box-svg" id="boxSvg" viewBox="0 0 220 210" xmlns="http://www.w3.org/2000/svg">
+        <!-- Teal box body -->
+        <rect x="15" y="102" width="190" height="100" rx="8" fill="#1d9e75"/>
+        <rect x="15" y="102" width="190" height="100" rx="8" fill="none" stroke="#0d7a5f" stroke-width="1.5"/>
+        <rect x="97"  y="102" width="26" height="100" fill="#f5b800" opacity="0.95"/>
+        <rect x="15"  y="145" width="190" height="14"  fill="#f5b800" opacity="0.95"/>
+        <rect x="23"  y="110" width="55"  height="84"  rx="3" fill="white" opacity="0.06"/>
+        <g id="lid-group">
+          <rect x="8"   y="70" width="204" height="40" rx="8" fill="#0d7a5f"/>
+          <rect x="8"   y="70" width="204" height="40" rx="8" fill="none" stroke="#085040" stroke-width="1.5"/>
+          <rect x="96"  y="70" width="28"  height="40" fill="#f5b800" opacity="0.95"/>
+          <rect x="16"  y="77" width="65"  height="25" rx="3" fill="white" opacity="0.06"/>
+          <ellipse cx="82"  cy="58" rx="30" ry="16" fill="#f5b800" transform="rotate(-22 82 58)"/>
+          <ellipse cx="82"  cy="58" rx="18" ry="9"  fill="#d4980a" transform="rotate(-22 82 58)"/>
+          <ellipse cx="138" cy="58" rx="30" ry="16" fill="#f5b800" transform="rotate(22 138 58)"/>
+          <ellipse cx="138" cy="58" rx="18" ry="9"  fill="#d4980a" transform="rotate(22 138 58)"/>
+          <ellipse cx="110" cy="62" rx="15" ry="12" fill="#f5b800"/>
+          <ellipse cx="110" cy="62" rx="8"  ry="7"  fill="#b8800a"/>
+          <path d="M100 70 Q90 86 82 102"  stroke="#f5b800" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <path d="M120 70 Q130 86 138 102" stroke="#f5b800" stroke-width="8" fill="none" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+    <div class="click-hint" id="clickHint">Tap to open your gift ✨</div>
+    <div class="reveal-msg" id="revealMsg">
+      <h2>Happy Birthday,<br><em>Courtney!</em> 🎉</h2>
+      <p>We got you something that keeps on giving! 🌷</p>
+    </div>
+  </div>
+
+  <div class="post-reveal" id="postReveal">
+    <div class="card" style="margin-top:32px;">
+      <div class="card-label">A note from Matt &amp; Amanda</div>
+      <p class="message">
+        Courtney! Happy Birthday!! 🎉 We wanted to do something a little
+        different this year — something that doesn't just last a day or get
+        eaten in five minutes (though cake is great too, tbh).
+        <br /><br />
+        So we got you tulip bulbs. From the Netherlands. Yes, the actual
+        Netherlands. Because you deserve something that's going to show up for
+        you every single spring and remind you how awesome you are. Every year,
+        a new bloom — just like you keep getting better with age. 😄
+        <br /><br />
+        Hope your birthday is as bright and beautiful as you are. We love you!
+      </p>
+      <p class="signature">— Matt &amp; Amanda 🎉</p>
+    </div>
+    <div class="gift-box">
+      <div class="gift-reveal-card">
+        <span class="gift-icon">🌷</span>
+        <h2>Dutch Tulip Bulbs from the Netherlands!</h2>
+        <p>Premium bulbs hand-selected just for you, ready to fill your garden with gorgeous color every spring.</p>
+      </div>
+    </div>
+    <div class="origin-badge">
+      <span class="origin-flag">🇳🇱</span>
+      <div class="origin-text">
+        <strong>Sourced from the Netherlands</strong>
+        <span>Home of the world's finest tulip bulbs since the 1600s</span>
+      </div>
+    </div>
+    <div class="cta-wrap">
+      <a href="../pages/care-guide.html" class="cta-btn">
+        <span class="btn-emoji">🌱</span>
+        See Your Tulip Care Guide
+      </a>
+    </div>
+  </div>
+
+  <footer>Made with love by Matt &amp; Amanda 🌷</footer>
+
+  <script>
+    window.CONFETTI_COLORS = ['#1d9e75','#f5b800','#0d7a5f','#d0faea','#fff4a0','#6edcb4'];
+  </script>
+  <script src="../js/reveal.js"></script>
+  <script>
+    var _base = window.openBox;
+    window.openBox = function() {
+      _base();
+      setTimeout(function() { document.getElementById('postReveal').classList.add('show'); }, 1300);
+    };
+  </script>
+</body>
+</html>

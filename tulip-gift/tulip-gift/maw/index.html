@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Mother's Day, Maw! 🌷</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    :root {
+      --bg:          #f8f4ff;
+      --heading:     #6b3fa0;
+      --text:        #2d2040;
+      --text-muted:  #9278b8;
+      --accent:      #9b5fcf;
+      --accent-text: #fff;
+      --card-bg:     #ffffff;
+      --card-border: #e0cff5;
+    }
+    body {
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 15% 0%,  #ede0ff 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 100%, #dfd0f8 0%, transparent 55%);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="petal-bg" id="petalBg"></div>
+
+  <section class="hero">
+    <p class="prompt-text" id="promptText">
+      You have a special gift<br>waiting for you… 🎀
+    </p>
+  </section>
+
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;margin-bottom:8px;background:none;">
+    <div class="gift-wrapper" id="giftWrapper" onclick="openBox()">
+      <div class="shockwave" id="sw1"></div>
+      <div class="shockwave shockwave2" id="sw2"></div>
+      <svg class="box-svg" id="boxSvg" viewBox="0 0 220 210" xmlns="http://www.w3.org/2000/svg">
+        <!-- Purple box body -->
+        <rect x="15" y="102" width="190" height="100" rx="8" fill="#9b5fcf"/>
+        <rect x="15" y="102" width="190" height="100" rx="8" fill="none" stroke="#6b3fa0" stroke-width="1.5"/>
+        <rect x="97"  y="102" width="26" height="100" fill="#f5c518" opacity="0.9"/>
+        <rect x="15"  y="145" width="190" height="14"  fill="#f5c518" opacity="0.9"/>
+        <rect x="23"  y="110" width="55"  height="84"  rx="3" fill="white" opacity="0.06"/>
+        <g id="lid-group">
+          <rect x="8"   y="70" width="204" height="40" rx="8" fill="#7c3fbd"/>
+          <rect x="8"   y="70" width="204" height="40" rx="8" fill="none" stroke="#5a2d8a" stroke-width="1.5"/>
+          <rect x="96"  y="70" width="28"  height="40" fill="#f5c518" opacity="0.9"/>
+          <rect x="16"  y="77" width="65"  height="25" rx="3" fill="white" opacity="0.06"/>
+          <ellipse cx="82"  cy="58" rx="30" ry="16" fill="#f5c518" transform="rotate(-22 82 58)"/>
+          <ellipse cx="82"  cy="58" rx="18" ry="9"  fill="#e8b510" transform="rotate(-22 82 58)"/>
+          <ellipse cx="138" cy="58" rx="30" ry="16" fill="#f5c518" transform="rotate(22 138 58)"/>
+          <ellipse cx="138" cy="58" rx="18" ry="9"  fill="#e8b510" transform="rotate(22 138 58)"/>
+          <ellipse cx="110" cy="62" rx="15" ry="12" fill="#f5c518"/>
+          <ellipse cx="110" cy="62" rx="8"  ry="7"  fill="#d4a012"/>
+          <path d="M100 70 Q90 86 82 102"  stroke="#f5c518" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <path d="M120 70 Q130 86 138 102" stroke="#f5c518" stroke-width="8" fill="none" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+    <div class="click-hint" id="clickHint">Tap to open your gift ✨</div>
+    <div class="reveal-msg" id="revealMsg">
+      <h2>Happy Mother's Day,<br><em>Maw!</em> 💜</h2>
+      <p>Something beautiful is on its way to you.</p>
+    </div>
+  </div>
+
+  <div class="post-reveal" id="postReveal">
+    <div class="card" style="margin-top:32px;">
+      <div class="card-label">A note from Matt &amp; Amanda</div>
+      <p class="message">
+        Maw — you are one of a kind. The way you love your family is something
+        truly special, and we are so grateful every single day that we get to
+        have you in our corner. Your warmth, your wisdom, and your sweet spirit
+        make every room brighter just by you being in it.
+        <br /><br />
+        We wanted to give you something as beautiful and enduring as you are —
+        so we picked out some gorgeous tulip bulbs all the way from the
+        Netherlands. Plant them, watch them grow, and know that every bloom is
+        a little reminder of how much we love you.
+        <br /><br />
+        Happy Mother's Day, Maw. You deserve all the flowers. 🌷
+      </p>
+      <p class="signature">— Matt &amp; Amanda 💜</p>
+    </div>
+    <div class="gift-box">
+      <div class="gift-reveal-card">
+        <span class="gift-icon">🌷</span>
+        <h2>Dutch Tulip Bulbs from the Netherlands!</h2>
+        <p>Premium bulbs hand-selected just for you, ready to fill your garden with gorgeous color every spring.</p>
+      </div>
+    </div>
+    <div class="origin-badge">
+      <span class="origin-flag">🇳🇱</span>
+      <div class="origin-text">
+        <strong>Sourced from the Netherlands</strong>
+        <span>Home of the world's finest tulip bulbs since the 1600s</span>
+      </div>
+    </div>
+    <div class="cta-wrap">
+      <a href="../pages/care-guide.html" class="cta-btn">
+        <span class="btn-emoji">🌱</span>
+        See Your Tulip Care Guide
+      </a>
+    </div>
+  </div>
+
+  <footer>Made with love by Matt &amp; Amanda 🌷</footer>
+
+  <script>
+    window.CONFETTI_COLORS = ['#9b5fcf','#f5c518','#6b3fa0','#e0cff5','#fff4a0','#c9a0f0'];
+  </script>
+  <script src="../js/reveal.js"></script>
+  <script>
+    var _base = window.openBox;
+    window.openBox = function() {
+      _base();
+      setTimeout(function() { document.getElementById('postReveal').classList.add('show'); }, 1300);
+    };
+  </script>
+</body>
+</html>
