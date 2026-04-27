@@ -114,13 +114,20 @@
     window.openBox = function() {
       _base();
       setTimeout(function() {
-        document.getElementById('postReveal').classList.add('show');
+        var pr = document.getElementById('postReveal');
+        if (pr) {
+          pr.classList.add('show');
+          requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+              pr.style.opacity = '1';
+              pr.style.transform = 'translateY(0)';
+            });
+          });
+        }
       }, 1000);
       setTimeout(function() {
         var grid = document.getElementById('varietyGrid');
         if (!grid) return;
-        // Pass the target element directly — buildVarietyGrid now builds real DOM nodes
-        // so SVG namespace is preserved and tulips render correctly
         window.buildVarietyGrid(window.PAGE_KEY, grid);
         window.animateCards();
       }, 1250);
