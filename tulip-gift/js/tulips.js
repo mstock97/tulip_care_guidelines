@@ -29,7 +29,8 @@ window.TULIP_VARIETIES = {
       bloom:'Mid spring', height:'17.5–21.5 in' },
     { name:'Tulipa Purple Prince',    type:'single',  c1:'#7040a8', c2:'#502080', c3:'#3a6b30', accent:'#b090e0',
       desc:'Rich glowing violet-purple with a silky sheen. A single early tulip that opens before most others.',
-      bloom:'Early spring', height:'12–14 in' },
+      bloom:'Early spring', height:'12–14 in',
+      photo:'https://cdn.webshopapp.com/shops/56745/files/422940241/tulp-tulipa-purple-prince-bio.jpg' },
     { name:'Tulipa Yellow Crown',     type:'fringed', c1:'#f8e040', c2:'#d8b800', c3:'#4a7c3f', accent:'#fdf0a0',
       desc:'Bright lemon-yellow petals with beautifully fringed, feathery crystal-like edges that catch the light.',
       bloom:'Late spring', height:'17.5–19.5 in' },
@@ -38,16 +39,20 @@ window.TULIP_VARIETIES = {
   courtney: [
     { name:'Tulipa Kunyun',          type:'single',  c1:'#f7e0a0', c2:'#e880c0', c3:'#4a7c3f', accent:'#f0b8d8',
       desc:'A color-shifting magic act: opens ivory-white with fuchsia-pink edges, matures to golden yellow with raspberry flushes.',
-      bloom:'Mid–late spring', height:'21.5–23.5 in' },
+      bloom:'Mid–late spring', height:'21.5–23.5 in',
+      photo:'https://www.whiteflowerfarm.com/mas_assets/cache/image/a/0/8/d/41101.Jpg' },
     { name:'Tulipa Orange Princess', type:'double',  c1:'#f07028', c2:'#901060', c3:'#4a7c3f', accent:'#f8a870',
       desc:'Lush peony-form double blooms in glowing nasturtium-orange, flamed with crimson-purple. Fragrant and full.',
-      bloom:'Mid–late spring', height:'12–14 in' },
+      bloom:'Mid–late spring', height:'12–14 in',
+      photo:'https://order.verberghe.nl/4027-large_default/tulipa-orange-princess-6362.jpg' },
     { name:'Tulipa Queensland',      type:'fringed', c1:'#d04878', c2:'#f8e0ec', c3:'#4a7c3f', accent:'#f0a8c8',
       desc:'Double fringed rose-red petals with delicately ruffled, serrated peach-pink edges. An absolute showpiece.',
-      bloom:'Late spring', height:'14–15.5 in' },
+      bloom:'Late spring', height:'14–15.5 in',
+      photo:'https://www.dutchgrown.nl/cdn/shop/products/Tulip-Queensland-6.jpg?v=1671712372' },
     { name:'Tulipa Purple Prince',   type:'single',  c1:'#7040a8', c2:'#502080', c3:'#3a6b30', accent:'#b090e0',
       desc:'Rich glowing violet-purple with a silky sheen. A single early tulip that opens before most others.',
-      bloom:'Early spring', height:'12–14 in' },
+      bloom:'Early spring', height:'12–14 in',
+      photo:'https://cdn.webshopapp.com/shops/56745/files/422940241/tulp-tulipa-purple-prince-bio.jpg' },
   ],
 };
 
@@ -175,12 +180,33 @@ var _photoCache = {};
 //   Step 2: imageinfo       → get a sized thumbnail URL for that filename
 function _fetchTulipPhoto(v, cb) {
   if (_photoCache[v.name] !== undefined) { cb(_photoCache[v.name]); return; }
+  // If a hardcoded photo URL is provided, try it first.
+  // Use a HEAD request to verify it loads — if it fails, fall through to Commons.
+  if (v.photo) {
+    fetch(v.photo, { method: 'HEAD', mode: 'no-cors' })
+      .then(function() {
+        // no-cors always "succeeds" from JS perspective (opaque response),
+        // so we trust the URL and let the img element handle any actual 404.
+        // We attach a Commons fallback directly on the img in the modal instead.
+        _photoCache[v.name] = v.photo;
+        cb(v.photo);
+      })
+      .catch(function() {
+        // Network-level failure — go straight to Commons
+        _fetchFromCommons(v, cb);
+      });
+    return;
+  }
 
+  _fetchFromCommons(v, cb);
+}
+
+// Wikimedia Commons two-step lookup (shared by _fetchTulipPhoto and modal fallback)
+function _fetchFromCommons(v, cb) {
   var cultivar  = v.name.replace(/^Tulipa\s+/, '');
   var catTitle  = "Category:Tulipa '" + cultivar + "'";
   var apiBase   = 'https://commons.wikimedia.org/w/api.php';
 
-  // Step 1: get first file in the cultivar category
   var step1 = apiBase
     + '?action=query&list=categorymembers&cmtype=file&cmlimit=1&format=json&origin=*'
     + '&cmtitle=' + encodeURIComponent(catTitle);
@@ -194,9 +220,8 @@ function _fetchTulipPhoto(v, cb) {
         cb(null);
         return;
       }
-      var fileTitle = members[0].title; // e.g. "File:Tulipa Queen of Night 1.jpg"
+      var fileTitle = members[0].title;
 
-      // Step 2: get a 700px-wide thumbnail URL for that file
       var step2 = apiBase
         + '?action=query&prop=imageinfo&iiprop=url&iiurlwidth=700&format=json&origin=*'
         + '&titles=' + encodeURIComponent(fileTitle);
@@ -351,7 +376,18 @@ function _openPhotoModal(v) {
         attr.style.cssText = 'position:absolute;bottom:5px;right:8px;font-size:0.58rem;color:rgba(255,255,255,0.6);font-family:Nunito,sans-serif;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,0.6);';
         photoArea.appendChild(attr);
       };
-      img.onerror = function(){ loadTxt.textContent = 'Photo not available'; };
+      img.onerror = function() {
+        // Hardcoded URL failed to load — try Commons as fallback
+        loadTxt.textContent = 'Trying another source\u2026';
+        _fetchFromCommons(v, function(fallbackSrc) {
+          if (fallbackSrc) {
+            img.src = fallbackSrc;
+          } else {
+            loadSvg.style.opacity = '0.7';
+            loadTxt.textContent = 'No photo found for this variety';
+          }
+        });
+      };
       photoArea.insertBefore(img, closeBtn);
       img.src = src;
     } else {
@@ -438,7 +474,7 @@ window.buildVarietyGrid = function(page, targetEl) {
     body.style.cssText = 'min-width:0;flex:1;';
 
     var nameEl = document.createElement('div');
-    nameEl.style.cssText = "font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:0.84rem;font-weight:700;color:#1a1a1a;line-height:1.25;";
+    nameEl.style.cssText = "font-family:Nunito,sans-serif;font-style:normal;font-size:1rem;font-weight:800;color:#111;line-height:1.3;";
     nameEl.textContent = v.name;
     body.appendChild(nameEl);
 
@@ -446,12 +482,12 @@ window.buildVarietyGrid = function(page, targetEl) {
     badgeRow.style.cssText = 'margin-top:5px;display:flex;gap:5px;flex-wrap:wrap;';
 
     var b1 = document.createElement('span');
-    b1.style.cssText = 'font-size:0.68rem;font-weight:800;letter-spacing:0.05em;background:'+v.c1+'28;color:'+v.c2+';padding:2px 7px;border-radius:99px;border:1px solid '+v.c1+'50;';
+    b1.style.cssText = 'font-size:0.75rem;font-weight:800;letter-spacing:0.03em;background:'+v.c1+'28;color:'+v.c2+';padding:2px 8px;border-radius:99px;border:1px solid '+v.c1+'50;';
     b1.textContent = v.bloom;
     badgeRow.appendChild(b1);
 
     var b2 = document.createElement('span');
-    b2.style.cssText = 'font-size:0.68rem;font-weight:800;letter-spacing:0.05em;background:#e8f5ee;color:#2a6040;padding:2px 7px;border-radius:99px;';
+    b2.style.cssText = 'font-size:0.75rem;font-weight:800;letter-spacing:0.03em;background:#e8f5ee;color:#2a6040;padding:2px 8px;border-radius:99px;';
     b2.textContent = v.height;
     badgeRow.appendChild(b2);
 
@@ -462,14 +498,14 @@ window.buildVarietyGrid = function(page, targetEl) {
     // ── Description ──
     var desc = document.createElement('p');
     desc.className = 'tulip-card-desc';
-    desc.style.cssText = 'font-size:0.78rem;color:#555;line-height:1.55;margin:0;';
+    desc.style.cssText = 'font-size:0.82rem;color:#555;line-height:1.6;margin:0;';
     desc.textContent = v.desc;
     card.appendChild(desc);
 
     // ── Touch hint ──
     var hint = document.createElement('div');
     hint.className = 'tulip-photo-hint';
-    hint.style.cssText = 'font-size:0.68rem;color:'+v.c2+';font-weight:700;opacity:0.6;margin-top:2px;';
+    hint.style.cssText = 'font-size:0.82rem;color:'+v.c2+';font-weight:700;opacity:0.75;margin-top:4px;';
     hint.textContent = 'Tap the tulip to see a real photo 📷';
     card.appendChild(hint);
 
