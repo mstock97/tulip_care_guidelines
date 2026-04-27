@@ -1,4 +1,4 @@
-// Settings
+// Settingsj
 const REDIRECT_URL = "gift-details.html";
 const TOTAL_TIME = 10;
 let timeLeft = TOTAL_TIME;
