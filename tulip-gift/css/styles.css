@@ -53,7 +53,6 @@ body {
 }
 
 /* ── GIFT BOX WRAPPER ── */
-/* ── GIFT BOX WRAPPER — no background, no radius, no padding ── */
 .gift-wrapper {
   position: relative;
   cursor: pointer;
@@ -68,7 +67,6 @@ body {
   line-height: 0;
 }
 
-/* Hover & active animate the SVG only — wrapper stays invisible */
 .gift-wrapper:not([data-opened]):hover .box-svg {
   animation: wiggle 0.45s ease forwards;
 }
@@ -101,7 +99,7 @@ body {
   100% { transform: rotate(-90deg) translate(-160px,-280px); opacity: 0; }
 }
 
-/* ── BOX SHAKE — on the SVG, not the wrapper ── */
+/* ── BOX SHAKE ── */
 .gift-wrapper.shake .box-svg { animation: boxShake 0.35s ease; }
 @keyframes boxShake {
   0%,100% { transform: translateX(0); }
@@ -135,7 +133,7 @@ body {
   100% { transform: scale(14);  opacity: 0;   border-width: 0.5px; }
 }
 
-/* ── CONFETTI (keyframe used by JS inline style) ── */
+/* ── CONFETTI ── */
 @keyframes confettiFall {
   0%   { opacity: 1; transform: translateY(0)    rotate(0deg)   scale(1); }
   80%  { opacity: 1; }
@@ -199,18 +197,24 @@ body {
   line-height: 1.65;
 }
 
-/* ── POST-REVEAL CONTENT ── */
+/* ── POST-REVEAL CONTENT ──
+   KEY FIX: display:none on load so the section takes up zero layout height.
+   Switching to display:flex (via .show) lets the page grow naturally when the
+   box is opened. opacity + transform then handle the fade-in animation.
+── */
 .post-reveal {
+  display: none;            /* takes up NO space before box is opened */
   opacity: 0;
-  pointer-events: none;
   transform: translateY(24px);
-  transition: opacity 0.8s ease 1.4s, transform 0.8s ease 1.4s;
   width: 100%;
-  display: flex;
   flex-direction: column;
   align-items: center;
+  /* transition fires after display:none → display:flex reflow */
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
+
 .post-reveal.show {
+  display: flex;            /* now occupies space and participates in layout */
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
