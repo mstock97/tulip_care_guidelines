@@ -170,17 +170,20 @@ function drawTulip(v) {
   return drawSingle(v);
 }
 
-// Build an SVG element for a single tulip at given pixel size
+// Build an SVG element for a single tulip at given pixel size.
+// innerHTML on a createElementNS SVG node is silently ignored in many browsers,
+// so we parse via a temporary div instead — the browser parses it as HTML which
+// handles inline SVG correctly, then we extract the real SVG element.
 window.makeTulipSVG = function(v, w, h) {
   w = w || 60; h = h || 120;
-  var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-  svg.setAttribute('viewBox','0 0 60 120');
-  svg.setAttribute('width', w);
-  svg.setAttribute('height', h);
-  svg.setAttribute('xmlns','http://www.w3.org/2000/svg');
-  svg.setAttribute('overflow','visible');
-  svg.innerHTML = drawTulip(v);
-  return svg;
+  var markup = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 120" '
+             + 'width="' + w + '" height="' + h + '" overflow="visible" '
+             + 'style="display:block;">'
+             + drawTulip(v)
+             + '</svg>';
+  var tmp = document.createElement('div');
+  tmp.innerHTML = markup;
+  return tmp.firstChild;  // live SVG element, namespace intact
 };
 
 // Build a launch element (wrapped svg in a span for physics)
