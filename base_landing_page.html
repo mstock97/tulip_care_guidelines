@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Surprise!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1 id="greeting">Surprise, [Name]! 🎉</h1>
+            <p class="subtext">Something special is waiting for you...</p>
+        </header>
+
+        <div class="timer-box">
+            <p>Redirecting in <span id="countdown">10</span> seconds</p>
+        </div>
+
+        <div class="button-group">
+            <button id="redirect-now" class="btn primary">Open My Gift Now!</button>
+            <button id="stop-timer" class="btn secondary">Wait, let me look at the confetti!</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
