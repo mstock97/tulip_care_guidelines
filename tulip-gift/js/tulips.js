@@ -164,29 +164,61 @@ window.makeTulipElement = function(v, sizePx) {
 
 var _photoCache = {};
 
-function _wikiTitle(name) {
-  return "Tulipa '" + name.replace(/^Tulipa\s+/, '') + "'";
-}
-
+// Fetch a real photo via Wikimedia Commons cultivar categories.
+// Why Commons and not Wikipedia?
+//   Wikipedia's pageimages API only works for articles — tulip cultivars
+//   don't have their own Wikipedia pages, so it always returns nothing.
+//   Commons has dedicated cultivar categories (e.g. Category:Tulipa 'Queen of Night')
+//   with dozens of freely-licensed photos each.
+// Two-step process (both calls use &origin=* for open CORS):
+//   Step 1: categorymembers → get the filename of the first photo in the category
+//   Step 2: imageinfo       → get a sized thumbnail URL for that filename
 function _fetchTulipPhoto(v, cb) {
   if (_photoCache[v.name] !== undefined) { cb(_photoCache[v.name]); return; }
-  var url = 'https://en.wikipedia.org/w/api.php?action=query&prop=pageimages'
-          + '&format=json&pithumbsize=700&origin=*&titles='
-          + encodeURIComponent(_wikiTitle(v.name));
-  fetch(url)
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      var pages = data.query && data.query.pages;
-      var src = null;
-      if (pages) {
-        Object.keys(pages).forEach(function(k){
-          if (!src && pages[k].thumbnail) src = pages[k].thumbnail.source;
-        });
+
+  var cultivar  = v.name.replace(/^Tulipa\s+/, '');
+  var catTitle  = "Category:Tulipa '" + cultivar + "'";
+  var apiBase   = 'https://commons.wikimedia.org/w/api.php';
+
+  // Step 1: get first file in the cultivar category
+  var step1 = apiBase
+    + '?action=query&list=categorymembers&cmtype=file&cmlimit=1&format=json&origin=*'
+    + '&cmtitle=' + encodeURIComponent(catTitle);
+
+  fetch(step1)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var members = data.query && data.query.categorymembers;
+      if (!members || !members.length) {
+        _photoCache[v.name] = null;
+        cb(null);
+        return;
       }
-      _photoCache[v.name] = src;
-      cb(src);
+      var fileTitle = members[0].title; // e.g. "File:Tulipa Queen of Night 1.jpg"
+
+      // Step 2: get a 700px-wide thumbnail URL for that file
+      var step2 = apiBase
+        + '?action=query&prop=imageinfo&iiprop=url&iiurlwidth=700&format=json&origin=*'
+        + '&titles=' + encodeURIComponent(fileTitle);
+
+      return fetch(step2)
+        .then(function(r) { return r.json(); })
+        .then(function(data2) {
+          var pages = data2.query && data2.query.pages;
+          var thumbUrl = null;
+          if (pages) {
+            Object.keys(pages).forEach(function(k) {
+              var ii = pages[k].imageinfo;
+              if (!thumbUrl && ii && ii[0] && ii[0].thumburl) {
+                thumbUrl = ii[0].thumburl;
+              }
+            });
+          }
+          _photoCache[v.name] = thumbUrl;
+          cb(thumbUrl);
+        });
     })
-    .catch(function(){ _photoCache[v.name]=null; cb(null); });
+    .catch(function() { _photoCache[v.name] = null; cb(null); });
 }
 
 function _openPhotoModal(v) {
