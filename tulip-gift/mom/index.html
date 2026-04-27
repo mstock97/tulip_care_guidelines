@@ -112,17 +112,17 @@
     var _base = window.openBox;
     window.openBox = function() {
       _base();
+      // Show post-reveal section as tulips land
       setTimeout(function() {
-        // Build variety grid first (cards start hidden via JS in reveal.js)
-        var grid = document.getElementById('varietyGrid');
-        grid.innerHTML = window.buildVarietyGrid(window.PAGE_KEY);
-        // Mark cards for animation
-        grid.querySelectorAll('.tulip-card').forEach(function(c) {
-          c.style.opacity = '0';
-          c.style.transform = 'translateY(22px) scale(0.92)';
-        });
         document.getElementById('postReveal').classList.add('show');
-      }, 1200);
+      }, 1000);
+      // Build grid after section visible, then pop cards in
+      setTimeout(function() {
+        var grid = document.getElementById('varietyGrid');
+        if (!grid) return;
+        grid.innerHTML = window.buildVarietyGrid(window.PAGE_KEY);
+        window.animateCards();
+      }, 1250);
     };
   </script>
 </body>
