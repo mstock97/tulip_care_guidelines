@@ -1,4 +1,4 @@
-// ── GIFT BOX REVEAL — SVG tulip physics + card pop-in ──
+// ── GIFT BOX REVEAL — SVG tulip physics + card pop-in ── 
 (function () {
 
   /* ── Petals: create paused until box opens ── */
