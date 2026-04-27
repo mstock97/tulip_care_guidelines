@@ -1,71 +1,640 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tulip Care Guide 🌷</title>
-  <link rel="stylesheet" href="../css/styles.css" />
-  <style>
-    :root {
-      --bg:          #f5fff8;
-      --heading:     #1a6b3a;
-      --text:        #183022;
-      --text-muted:  #5a9870;
-      --accent:      #2db560;
-      --accent-text: #fff;
-      --card-bg:     #ffffff;
-      --card-border: #b8e8cc;
-    }
-    body {
-      background: var(--bg);
-      background-image:
-        radial-gradient(ellipse at 10% 0%, #d0f5e0 0%, transparent 55%),
-        radial-gradient(ellipse at 90% 100%, #c8f2d8 0%, transparent 55%);
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .coming-soon {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 60px 24px;
-    }
-    .coming-soon .big-emoji {
-      font-size: 5rem;
-      display: block;
-      margin-bottom: 20px;
-      animation: bounceIn 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
-    }
-    @keyframes bounceIn {
-      from { transform: scale(0.3); opacity: 0; }
-      to   { transform: scale(1);   opacity: 1; }
-    }
-    .coming-soon h1 {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(2rem, 7vw, 3.5rem);
-      color: var(--heading);
-      margin-bottom: 16px;
-    }
-    .coming-soon p {
-      font-family: 'Nunito', sans-serif;
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      font-weight: 600;
-      max-width: 420px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-  </style>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Nunito:wght@600;800&display=swap" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dutch Tulip Care Guide</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tulip-bg':      '#FAF8F5',
+                        'tulip-surface': '#F0EBE1',
+                        'tulip-text':    '#3D3835',
+                        'tulip-accent':  '#D9777F',
+                        'tulip-leaf':    '#7A9A74',
+                        'tulip-soil':    '#8C6F5A'
+                    },
+                    fontFamily: {
+                        'serif': ['Lora', 'serif'],
+                        'sans':  ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FAF8F5;
+            color: #3D3835;
+            font-family: 'Nunito', sans-serif;
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Lora', serif; }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            height: 300px;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .tab-active {
+            border-bottom: 2px solid #D9777F;
+            color: #D9777F;
+            font-weight: 600;
+        }
+
+        /* Subtle fade-in for calendar content */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 0.25s ease forwards; }
+
+        /* Correction badge */
+        .badge-corrected {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            color: #92400E;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 999px;
+            vertical-align: middle;
+            margin-left: 6px;
+        }
+        .badge-new {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #D1FAE5;
+            border: 1px solid #34D399;
+            color: #065F46;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 999px;
+            vertical-align: middle;
+            margin-left: 6px;
+        }
+    </style>
 </head>
-<body>
-  <div class="petal-bg"></div>
-  <div class="coming-soon">
-    <span class="big-emoji">🌱</span>
-    <h1>Care Guide<br><em>Coming Soon!</em></h1>
-    <p>We're putting together the perfect tulip care guide for you. Check back soon — everything you need to grow a beautiful garden will be right here!</p>
-  </div>
-  <script src="../js/petals.js"></script>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-tulip-bg/90 backdrop-blur-md border-b border-tulip-surface">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <span class="text-2xl">🌷</span>
+                    <span class="font-serif font-semibold text-lg text-tulip-text">Dutch Tulip Care</span>
+                </div>
+                <div class="hidden sm:flex space-x-8">
+                    <a href="#calendar"  class="text-tulip-text hover:text-tulip-accent transition text-sm">Care Calendar</a>
+                    <a href="#planting"  class="text-tulip-text hover:text-tulip-accent transition text-sm">Planting Basics</a>
+                    <a href="#aftercare" class="text-tulip-text hover:text-tulip-accent transition text-sm">Aftercare</a>
+                    <a href="#warmclimate" class="text-tulip-text hover:text-tulip-accent transition text-sm">Warm Climates</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="py-16 sm:py-24 px-4 text-center max-w-4xl mx-auto">
+        <div class="inline-block p-3 rounded-full bg-tulip-surface mb-6 text-4xl shadow-sm">
+            🇳🇱 ✈️ 🌷
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-serif text-tulip-text mb-6">A Gift from the Netherlands</h1>
+        <p class="text-lg sm:text-xl text-tulip-text/80 max-w-2xl mx-auto leading-relaxed">
+            Congratulations on receiving authentic Dutch tulip bulbs! This guide is built on guidance from the RHS, Cornell University's Flower Bulb Research Program, and multiple University Extension services — so you get one spectacular spring, and maybe many more.
+        </p>
+        <!-- Honest framing callout -->
+        <div class="mt-8 inline-block bg-tulip-accent/10 border border-tulip-accent/30 rounded-2xl px-6 py-4 max-w-xl text-left">
+            <p class="text-sm text-tulip-text leading-relaxed">
+                <span class="font-semibold text-tulip-accent">Good to know:</span> Most modern Dutch hybrid tulips are best treated as <strong>one-season ornamentals</strong> — they may not bloom as strongly year two. This guide tells you both how to get a brilliant first bloom <em>and</em> how to maximize your chances of a second one.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 pb-24 space-y-24">
+
+        <!-- ── SECTION 1: Calendar ── -->
+        <section id="calendar" class="scroll-mt-24">
+            <div class="mb-8 text-center sm:text-left">
+                <h2 class="text-3xl font-serif text-tulip-text mb-4">The Annual Care Calendar</h2>
+                <p class="text-md text-tulip-text/80 max-w-3xl">
+                    Tulip care is driven by soil temperature, not just the calendar date. They need a period of cold dormancy in the ground (or your fridge) to trigger their spring bloom. Click a season to reveal what to do.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-tulip-surface overflow-hidden">
+                <!-- Season tabs -->
+                <div class="flex flex-nowrap overflow-x-auto no-scrollbar border-b border-tulip-surface" id="timeline-buttons">
+                    <button onclick="updateCalendar('fall')"   id="btn-fall"   class="flex-1 min-w-[120px] py-4 px-2 text-center transition hover:bg-tulip-bg font-semibold tab-active border-r border-tulip-surface">
+                        <span class="block text-2xl mb-1">🍂</span>Autumn<br><span class="text-xs font-normal text-gray-500">Sep – Nov</span>
+                    </button>
+                    <button onclick="updateCalendar('winter')" id="btn-winter" class="flex-1 min-w-[120px] py-4 px-2 text-center transition hover:bg-tulip-bg text-gray-500 border-r border-tulip-surface">
+                        <span class="block text-2xl mb-1">❄️</span>Winter<br><span class="text-xs font-normal text-gray-500">Dec – Feb</span>
+                    </button>
+                    <button onclick="updateCalendar('spring')" id="btn-spring" class="flex-1 min-w-[120px] py-4 px-2 text-center transition hover:bg-tulip-bg text-gray-500 border-r border-tulip-surface">
+                        <span class="block text-2xl mb-1">🌱</span>Spring<br><span class="text-xs font-normal text-gray-500">Mar – May</span>
+                    </button>
+                    <button onclick="updateCalendar('summer')" id="btn-summer" class="flex-1 min-w-[120px] py-4 px-2 text-center transition hover:bg-tulip-bg text-gray-500">
+                        <span class="block text-2xl mb-1">☀️</span>Summer<br><span class="text-xs font-normal text-gray-500">Jun – Aug</span>
+                    </button>
+                </div>
+                <div class="p-6 sm:p-10 bg-white min-h-[320px] flex flex-col justify-center" id="calendar-content"></div>
+            </div>
+        </section>
+
+
+        <!-- ── SECTION 2: Planting Fundamentals ── -->
+        <section id="planting" class="scroll-mt-24">
+            <div class="mb-8 text-center sm:text-left">
+                <h2 class="text-3xl font-serif text-tulip-text mb-4">Planting Fundamentals</h2>
+                <p class="text-md text-tulip-text/80 max-w-3xl">
+                    Getting the bulbs into the ground correctly is 90% of the work. Excellent drainage is non-negotiable — waterlogged soil is the number-one killer of tulip bulbs over winter.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <!-- Depth & Spacing chart -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-tulip-surface">
+                    <h3 class="text-xl font-serif mb-1 flex items-center gap-2">
+                        <span class="text-tulip-soil">📏</span> Depth &amp; Spacing
+                    </h3>
+                    <p class="text-sm text-gray-500 mb-1">Always plant with the pointed tip facing <strong>up</strong>. Measure depth from the <em>base</em> of the bulb.</p>
+                    <div class="chart-container mt-4">
+                        <canvas id="plantingChart"></canvas>
+                    </div>
+                    <!-- Cornell tip -->
+                    <div class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm">
+                        <strong>Research tip (Cornell, 2019):</strong> If you want blooms beyond year one, try planting 2–4 inches deep with 2–4 inches of mulch on top. Cornell's six-year trial found shallower planting with mulch produced significantly more flowers in years 2–3.
+                    </div>
+                </div>
+
+                <!-- Soil guidance -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-tulip-surface">
+                    <h3 class="text-xl font-serif mb-1 flex items-center gap-2">
+                        <span class="text-tulip-leaf">🌱</span> Ideal Soil Conditions
+                        <span class="badge-corrected">✦ Updated</span>
+                    </h3>
+                    <p class="text-sm text-gray-500 mb-4">No specific ratio exists in expert literature — focus on these principles instead.</p>
+
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3 p-3 bg-tulip-bg rounded-xl border border-tulip-surface">
+                            <span class="text-2xl mt-0.5">🧪</span>
+                            <div>
+                                <p class="font-semibold text-sm text-tulip-text">pH 6.0 – 7.0</p>
+                                <p class="text-xs text-gray-500">Slightly acidic to neutral. Most garden soils fall in this range naturally.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-tulip-bg rounded-xl border border-tulip-surface">
+                            <span class="text-2xl mt-0.5">💧</span>
+                            <div>
+                                <p class="font-semibold text-sm text-tulip-text">Drainage above all else</p>
+                                <p class="text-xs text-gray-500">If water pools in a spot after rain, tulips will rot there. No exceptions.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-tulip-bg rounded-xl border border-tulip-surface">
+                            <span class="text-2xl mt-0.5">🪹</span>
+                            <div>
+                                <p class="font-semibold text-sm text-tulip-text">Amend heavy clay soils</p>
+                                <p class="text-xs text-gray-500">Mix in coarse grit, sharp sand, or compost. Better yet — use raised beds or containers.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-amber-50 rounded-xl border border-amber-200">
+                            <span class="text-2xl mt-0.5">⚠️</span>
+                            <div>
+                                <p class="font-semibold text-sm text-tulip-text">Avoid fresh manure &amp; high nitrogen</p>
+                                <p class="text-xs text-gray-500">Both promote bulb rot and disease. Skip the bone meal too — it attracts digging animals and most soils already have enough phosphorus.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fertilizing callout -->
+            <div class="mt-8 bg-white rounded-2xl shadow-sm border border-tulip-surface p-6">
+                <h3 class="text-xl font-serif mb-3 flex items-center gap-2">
+                    <span>🌿</span> Fertilizing
+                    <span class="badge-new">✦ New</span>
+                </h3>
+                <div class="grid sm:grid-cols-3 gap-4">
+                    <div class="p-4 bg-tulip-bg rounded-xl border border-tulip-surface">
+                        <p class="font-semibold text-sm text-tulip-text mb-1">If treating as annuals</p>
+                        <p class="text-xs text-gray-600">No fertilizer needed at all. The bulb already contains everything required for one spectacular bloom.</p>
+                    </div>
+                    <div class="p-4 bg-tulip-bg rounded-xl border border-tulip-surface">
+                        <p class="font-semibold text-sm text-tulip-text mb-1">If trying to perennialize</p>
+                        <p class="text-xs text-gray-600">Top-dress (don't bury) a balanced 10-10-10 slow-release fertilizer at planting. Add a second top-dressing when shoots emerge in spring.</p>
+                    </div>
+                    <div class="p-4 bg-tulip-bg rounded-xl border border-tulip-surface">
+                        <p class="font-semibold text-sm text-tulip-text mb-1">RHS liquid feed method</p>
+                        <p class="text-xs text-gray-600">Once shoots emerge, water weekly with a potassium-rich liquid fertilizer (tomato feed works well). Stop when leaves start to yellow.</p>
+                    </div>
+                </div>
+                <p class="mt-3 text-xs text-gray-400 italic">Never place fertilizer directly in the planting hole — direct contact can burn developing roots.</p>
+            </div>
+        </section>
+
+
+        <!-- ── SECTION 3: Aftercare ── -->
+        <section id="aftercare" class="scroll-mt-24">
+            <div class="mb-8 text-center sm:text-left">
+                <h2 class="text-3xl font-serif text-tulip-text mb-4">Crucial Aftercare</h2>
+                <p class="text-md text-tulip-text/80 max-w-3xl">
+                    What you do <em>after</em> the flowers fade determines whether your bulbs have any chance of blooming again. The single most damaging mistake beginners make is cutting the leaves too early.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-tulip-surface flex flex-col md:flex-row overflow-hidden">
+                <!-- Tab sidebar -->
+                <div class="w-full md:w-1/3 bg-tulip-surface/30 p-4 border-b md:border-b-0 md:border-r border-tulip-surface flex md:flex-col gap-2 overflow-x-auto no-scrollbar">
+                    <button onclick="updateCareTab('deadheading')" id="tab-deadheading" class="care-tab text-left px-4 py-3 rounded-lg bg-white shadow-sm font-semibold text-tulip-text border-l-4 border-tulip-accent transition whitespace-nowrap md:whitespace-normal">
+                        ✂️ Deadheading
+                    </button>
+                    <button onclick="updateCareTab('foliage')" id="tab-foliage" class="care-tab text-left px-4 py-3 rounded-lg hover:bg-white/60 text-gray-600 border-l-4 border-transparent transition whitespace-nowrap md:whitespace-normal">
+                        🍃 Letting Leaves Yellow
+                    </button>
+                    <button onclick="updateCareTab('watering')" id="tab-watering" class="care-tab text-left px-4 py-3 rounded-lg hover:bg-white/60 text-gray-600 border-l-4 border-transparent transition whitespace-nowrap md:whitespace-normal">
+                        💧 Watering Strategy
+                    </button>
+                    <button onclick="updateCareTab('storage')" id="tab-storage" class="care-tab text-left px-4 py-3 rounded-lg hover:bg-white/60 text-gray-600 border-l-4 border-transparent transition whitespace-nowrap md:whitespace-normal">
+                        📦 Digging &amp; Storing
+                    </button>
+                </div>
+                <!-- Tab content -->
+                <div class="w-full md:w-2/3 p-6 sm:p-8 flex flex-col justify-center" id="care-content"></div>
+            </div>
+        </section>
+
+
+        <!-- ── SECTION 4: Warm Climates ── -->
+        <section id="warmclimate" class="scroll-mt-24">
+            <div class="mb-8 text-center sm:text-left">
+                <h2 class="text-3xl font-serif text-tulip-text mb-4 flex items-center gap-3">
+                    🌡️ Warm Climate Guide
+                    <span class="badge-new">✦ New</span>
+                </h2>
+                <p class="text-md text-tulip-text/80 max-w-3xl">
+                    In USDA Zones 7b–10, your winters won't get cold enough to trigger natural dormancy. You need to do that part yourself. This is the complete protocol from Texas A&amp;M, Clemson, and UC Agriculture &amp; Natural Resources.
+                </p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div class="bg-white rounded-2xl border border-tulip-surface p-5 shadow-sm">
+                    <div class="text-3xl mb-3">🧊</div>
+                    <h4 class="font-serif text-lg mb-2">Step 1 — Pre-chill in your fridge</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">Place bulbs in a paper bag or mesh produce bag and refrigerate at 35–45 °F for 8–14 weeks. Zones 7b: minimum 6 weeks. Zone 8+: at least 10–12 weeks.</p>
+                    <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <p class="text-xs text-red-700"><strong>Critical:</strong> Never store bulbs near apples, pears, bananas, or tomatoes. Ethylene gas from fruit destroys the embryonic flower inside the bulb (confirmed by Cornell research).</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-tulip-surface p-5 shadow-sm">
+                    <div class="text-3xl mb-3">📅</div>
+                    <h4 class="font-serif text-lg mb-2">Step 2 — Plant late in the season</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">Don't plant until late November through December, once soil is consistently below 50 °F. Texas A&amp;M recommends the third week of December for the Dallas–Fort Worth area. Don't let pre-chilled bulbs warm up in the sun before planting.</p>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-tulip-surface p-5 shadow-sm">
+                    <div class="text-3xl mb-3">🌤️</div>
+                    <h4 class="font-serif text-lg mb-2">Step 3 — Site in afternoon shade</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">In Zones 7–8, afternoon shade extends bloom life significantly. Morning sun + afternoon shade is the ideal. Mulch 2–3 inches to buffer soil temperature swings.</p>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-tulip-surface p-5 shadow-sm">
+                    <div class="text-3xl mb-3">🌷</div>
+                    <h4 class="font-serif text-lg mb-2">Best varieties for warm zones</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">Clemson recommends Single Late and Darwin Hybrid types: 'Halcro,' 'Queen of Night,' 'Menton,' 'Apeldoorn,' 'General Eisenhower.' For true perennials in Zones 8–10 with no re-chilling: <em>T. clusiana</em>, <em>T. saxatilis</em>, <em>T. sylvestris</em>.</p>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-tulip-surface p-5 shadow-sm">
+                    <div class="text-3xl mb-3">🗑️</div>
+                    <h4 class="font-serif text-lg mb-2">Step 4 — Discard after bloom</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">In warm zones, tulips cannot be counted on for a second season. Clemson HGIC puts it plainly: <em>"Tulips can usually only be counted on for a single season of color."</em> Plant fresh pre-chilled bulbs each fall for reliable results.</p>
+                </div>
+
+                <div class="bg-amber-50 rounded-2xl border border-amber-200 p-5 shadow-sm">
+                    <div class="text-3xl mb-3">🚫</div>
+                    <h4 class="font-serif text-lg mb-2 text-amber-800">Zones 9b–11</h4>
+                    <p class="text-sm text-amber-700 leading-relaxed">UF/IFAS and Colorblends advise against planting tulips in the Gulf Coast and South Florida. The winters are simply not cold enough — even pre-chilled bulbs struggle. Consider alternatives like anemones, ranunculus, or freesia instead.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ── Common Mistakes ── -->
+        <section>
+            <div class="mb-8 text-center sm:text-left">
+                <h2 class="text-3xl font-serif text-tulip-text mb-4">13 Mistakes That Ruin Tulips</h2>
+                <p class="text-md text-tulip-text/80 max-w-3xl">Compiled from RHS, Cornell, Iowa State, and multiple Cooperative Extension services.</p>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <!-- Mistake cards -->
+                <div class="bg-white rounded-xl border border-tulip-surface p-4 flex items-start gap-3 shadow-sm">
+                    <span class="text-tulip-accent font-bold text-lg mt-0.5">01</span>
+                    <p class="text-sm text-gray-700"><strong>Planting in warm soil.</strong> Wait until soil drops below 55 °F or Botrytis and Fusarium rot can take hold before winter even arrives.</p>
+                </div>
+                <div class="bg-white rounded-xl border border-tulip-surface p-4 flex items-start gap-3 shadow-sm">
+                    <span class="text-tulip-accent font-bold text-lg mt-0.5">02</span>
+                    <p class="text-sm text-gray-700"><strong>Cutting foliage too early.</strong> The #1 post-bloom mistake. Green leaves are photosynthesizing energy back into the bulb. Wait until fully yellow-brown.</p>
+                </div>
+                <div class="bg-white rounded-xl border border-tulip-surface p-4 flex items-start gap-3 shadow-sm">
+                    <span class="text-tulip-accent font-bold text-lg mt-0.5">03</span>
+                    <p class="text-sm text-gray-700"><strong>Overwatering or siting in irrigated beds.</strong> "Rainy summers, irrigation systems, and wet soil are death to tulips." — Old Farmer's Almanac.</p>
+                </div>
+                <div class="bg-white rounded-xl border border-tulip-surface p-4 flex items-start gap-3 shadow-sm">
+                    <span class="text-tulip-accent font-bold text-lg mt-0.5">04</span>
+                    <p class="text-sm text-gray-700"><strong>Insufficient chilling in warm zones.</strong> Blasted buds, stunted stems, and flowers that never open are the result of inadequate cold exposure.</p>
+                </div>
+                <div class="bg-white rounded-xl border border-tulip-surface p-4 flex items-start gap-3 shadow-sm">
+                    <span class="text-tulip-accent font-bold text-lg mt-0.5">05</span>
+                    <p class="text-sm text-gray-700"><strong>Storing bulbs near fruit.</strong> Ethylene gas from apples, pears, or bananas aborts the embryonic flower inside the bulb (Cornell research).</p>
+                </div>
+                <div class="bg-white rounded-xl border border-tulip-surface p-4 flex items-start gap-3 shadow-sm">
+                    <span class="text-tulip-accent font-bold text-lg mt-0.5">06</span>
+                    <p class="text-sm text-gray-700"><strong>Expecting modern hybrids to perennialize.</strong> Most large Dutch hybrids won't bloom reliably year two. Choose Darwin Hybrid, Fosteriana, or species types for longevity.</p>
+                </div>
+                <div class="bg-white rounded-xl border border-tulip-surface p-4 flex items-start gap-3 shadow-sm">
+                    <span class="text-tulip-accent font-bold text-lg mt-0.5">07</span>
+                    <p class="text-sm text-gray-700"><strong>Storing in sealed plastic.</strong> Trapped moisture causes rot. Use mesh bags, paper bags, or open trays with good airflow.</p>
+                </div>
+                <div class="bg-white rounded-xl border border-tulip-surface p-4 flex items-start gap-3 shadow-sm">
+                    <span class="text-tulip-accent font-bold text-lg mt-0.5">08</span>
+                    <p class="text-sm text-gray-700"><strong>Adding fertilizer directly to the planting hole.</strong> Direct contact burns roots. Always top-dress on the soil surface.</p>
+                </div>
+                <div class="bg-white rounded-xl border border-tulip-surface p-4 flex items-start gap-3 shadow-sm">
+                    <span class="text-tulip-accent font-bold text-lg mt-0.5">09</span>
+                    <p class="text-sm text-gray-700"><strong>Braiding or tying foliage.</strong> Old folk practice that reduces leaf-surface sunlight — the opposite of what you want. Let leaves lie naturally.</p>
+                </div>
+                <div class="bg-white rounded-xl border border-tulip-surface p-4 flex items-start gap-3 shadow-sm">
+                    <span class="text-tulip-accent font-bold text-lg mt-0.5">10</span>
+                    <p class="text-sm text-gray-700"><strong>Planting in deep shade or wet ground.</strong> At least 6 hours of direct sun and well-drained soil are minimum requirements, non-negotiable.</p>
+                </div>
+                <div class="bg-white rounded-xl border border-tulip-surface p-4 flex items-start gap-3 shadow-sm">
+                    <span class="text-tulip-accent font-bold text-lg mt-0.5">11</span>
+                    <p class="text-sm text-gray-700"><strong>Watering during summer dormancy.</strong> Bulbs left in the ground need to bake warm and dry over summer. Don't let irrigation reach them.</p>
+                </div>
+                <div class="bg-white rounded-xl border border-tulip-surface p-4 flex items-start gap-3 shadow-sm">
+                    <span class="text-tulip-accent font-bold text-lg mt-0.5">12</span>
+                    <p class="text-sm text-gray-700"><strong>Ignoring squirrels and voles.</strong> Tulip bulbs are edible to rodents (unlike daffodils). Interplanting with daffodils or alliums deters them.</p>
+                </div>
+                <div class="bg-white rounded-xl border border-tulip-surface p-4 flex items-start gap-3 shadow-sm">
+                    <span class="text-tulip-accent font-bold text-lg mt-0.5">13</span>
+                    <p class="text-sm text-gray-700"><strong>Not curing dug bulbs before storage.</strong> After lifting, let bulbs dry in shade with good airflow for 1–2 weeks until skins are papery before putting them away.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Outro -->
+        <section class="text-center bg-tulip-accent/10 p-8 sm:p-12 rounded-3xl border border-tulip-accent/20">
+            <div class="text-5xl mb-4">💝</div>
+            <h3 class="text-2xl font-serif text-tulip-text mb-4">Enjoy Your Blooms!</h3>
+            <p class="max-w-2xl mx-auto text-tulip-text/80">
+                Plant them well this autumn, let the winter cold do its quiet work, and you'll be rewarded with a spectacular slice of the Netherlands in your own garden next spring.
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="bg-tulip-surface py-8 text-center text-sm text-gray-500">
+        <p>Care guidance verified against RHS, Cornell Flower Bulb Research Program, Old Farmer's Almanac, and University Cooperative Extension services. 🌷</p>
+    </footer>
+
+
+    <script>
+    // ─────────────────────────────────────────────
+    //  DATA
+    // ─────────────────────────────────────────────
+
+    const calendarData = {
+        fall: {
+            title:  "Autumn: Time to Plant",
+            icon:   "🍂",
+            color:  "text-orange-600",
+            bg:     "bg-orange-50",
+            tasks: [
+                "<strong>Watch soil temperature, not the calendar.</strong> Plant when soil drops below 55 °F (13 °C) and nights are consistently in the 40s. Planting in warm soil risks rot and premature sprouting.",
+                "Choose a spot with at least 6 hours of direct sun. Afternoon shade is a plus in warmer regions (Zones 7–8).",
+                "Plant large Dutch hybrids <strong>6–8 inches deep</strong> (measured from bulb base), pointy end facing up, 4–6 inches apart. For better repeat blooming, try 2–4 inches deep with 2–4 inches of mulch on top (Cornell, 2019).",
+                "Water thoroughly <em>once</em> after planting to settle the soil and wake up the roots. Then stop — don't water again until spring growth begins."
+            ]
+        },
+        winter: {
+            title:  "Winter: The Chilling Period",
+            icon:   "❄️",
+            color:  "text-blue-500",
+            bg:     "bg-blue-50",
+            tasks: [
+                "Do nothing. The bulbs are establishing roots underground.",
+                "<strong>Tulips require 12–16 weeks at 35–48 °F</strong> to trigger spring bloom — the research-verified range from Cornell, Iowa State, and University of Georgia. Cooler temperatures (35–38 °F) produce longer stems; warmer (45–48 °F) produce shorter stems.",
+                "Do not water during winter dormancy — frozen, soggy soil causes bulbs to rot.",
+                "<strong>Warm climate gardeners (Zones 7b–10):</strong> Your bulbs should currently be in the refrigerator in a paper bag, away from any fruit. See the Warm Climate section below."
+            ]
+        },
+        spring: {
+            title:  "Spring: Growth &amp; Bloom",
+            icon:   "🌱",
+            color:  "text-green-600",
+            bg:     "bg-green-50",
+            tasks: [
+                "Watch for green tips pushing through the soil — one of gardening's best sights.",
+                "Begin watering if spring is dry: about ⅔ inch per week is sufficient. Tulips do not like constantly wet soil.",
+                "If perennializing: top-dress with a balanced fertilizer or begin weekly liquid potassium-rich feed (tomato fertilizer) once shoots are visible. Stop when leaves start to yellow.",
+                "Blooms typically last 1–2 weeks. Cooler spring temperatures extend bloom life significantly. Protect emerging shoots from deer and rabbits — tulip bulbs, unlike daffodils, are not toxic to animals."
+            ]
+        },
+        summer: {
+            title:  "Summer: Energy Regeneration",
+            icon:   "☀️",
+            color:  "text-yellow-600",
+            bg:     "bg-yellow-50",
+            tasks: [
+                "<strong>Deadhead immediately</strong> once petals drop: cut or snap off the flower head just above the topmost leaf to stop the plant wasting energy on seed production.",
+                "<strong>CRITICAL — do not cut the green leaves.</strong> They are photosynthesizing energy back into the bulb for next year. Cutting them early is the single most damaging mistake a beginner can make (RHS, Iowa State).",
+                "Allow foliage to turn fully yellow-to-brown and detach easily. This typically takes 6 weeks but can stretch to late June or July depending on weather. The biological signal — not a date — is what matters.",
+                "Once leaves are dead, cut to ground level and stop watering entirely. Bulbs left in the ground need a warm, dry summer rest. If your beds are irrigated, consider lifting and storing bulbs instead."
+            ]
+        }
+    };
+
+    const careData = {
+        deadheading: {
+            title: "Deadheading",
+            icon:  "✂️",
+            badge: "",
+            text: `As soon as tulip petals begin to fall, cut or snap off the flower head just above the topmost leaf.
+                   <br><br><strong>Why it matters:</strong> A tulip left with a fading flower will redirect energy into forming seeds — depleting the bulb for next season. By removing the head promptly, you send that energy back down into the bulb where it belongs.
+                   <br><br>You can either cut the full stalk above the top leaf (RHS method) or simply snap the top few inches off. Either is correct. What's not correct is leaving the head on.`
+        },
+        foliage: {
+            title: "Letting Leaves Yellow",
+            icon:  "🍃",
+            badge: "",
+            text: `This is <strong>the most important rule in tulip aftercare</strong>, and the one most beginners break.
+                   <br><br>Even after the flower is gone, the green leaves act like solar panels — photosynthesizing sunlight and sending carbohydrates back down into the bulb to fuel next year's bloom. Iowa State, RHS, and Missouri Botanical Garden all name premature leaf removal as the top cause of tulips failing to bloom again.
+                   <br><br>Wait until leaves turn fully yellow-to-brown and pull away from the soil easily without needing to cut. This typically takes about 6 weeks, but can stretch longer in cool weather. <strong>Do not braid or tie down leaves</strong> — that reduces sun exposure and defeats the whole purpose. Camouflage yellowing foliage by interplanting with fast-growing annuals or perennials instead.`
+        },
+        watering: {
+            title: "Watering Strategy",
+            icon:  "💧",
+            badge: "corrected",
+            text: `<strong>Autumn (planting):</strong> Water once thoroughly after planting, then stop.<br>
+                   <strong>Winter:</strong> Do not water. Soggy frozen soil causes bulb rot.<br>
+                   <strong>Spring:</strong> Water only if rainfall is short — about ⅔ inch per week. Tulips actively dislike being kept wet.<br>
+                   <strong>Summer:</strong> Stop watering completely once leaves die back. Bulbs need to bake in warm, dry soil during dormancy.
+                   <br><br><div class="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm"><strong>The big warning (Old Farmer's Almanac):</strong> "Rainy summers, irrigation systems, and wet soil are death to tulips." If your tulip bed sits in an irrigated lawn or border, either move the bulbs after bloom or expect them to rot and not return next year.</div>`
+        },
+        storage: {
+            title: "Digging &amp; Storing",
+            icon:  "📦",
+            badge: "corrected",
+            text: `<strong>Honest framing:</strong> Most modern Dutch hybrid tulips are best treated as one-season annuals. RHS, Missouri Botanical Garden, and Colorblends all recommend planting fresh bulbs each fall for reliable display. For repeat performance, choose Darwin Hybrids, Fosteriana (Emperor), Kaufmanniana, Greigii, or species types.
+                   <br><br><strong>If you want to save and store bulbs:</strong>
+                   <br>① Once foliage has died fully, dig with a garden fork (not a spade — you'll slice them).
+                   <br>② Brush off loose soil and lay bulbs in shade with good airflow for <strong>1–2 weeks</strong> until the outer skins are completely papery and dry. Skip this curing step and they'll rot in storage.
+                   <br>③ Discard any showing blue mold, pink/white mold, soft spots, or distorted shapes.
+                   <br>④ Store in <strong>mesh bags, paper bags, or open trays</strong> at 60–70 °F (65 °F ideal), dark and ventilated. Never sealed plastic.
+                   <br>⑤ <strong>Keep well away from apples, pears, bananas, and tomatoes</strong> — ethylene gas from fruit damages the embryonic flower inside (Cornell research).`
+        }
+    };
+
+    // ─────────────────────────────────────────────
+    //  INTERACTION LOGIC
+    // ─────────────────────────────────────────────
+
+    function updateCalendar(season) {
+        ['fall','winter','spring','summer'].forEach(s => {
+            const btn = document.getElementById(`btn-${s}`);
+            if (s === season) { btn.classList.add('tab-active'); btn.classList.remove('text-gray-500'); }
+            else              { btn.classList.remove('tab-active'); btn.classList.add('text-gray-500'); }
+        });
+
+        const d   = calendarData[season];
+        const div = document.getElementById('calendar-content');
+        const tasksHtml = d.tasks.map(t =>
+            `<li class="mb-4 flex items-start gap-3">
+                <span class="mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${d.color.replace('text-','bg-')}"></span>
+                <span class="text-gray-700 leading-relaxed">${t}</span>
+             </li>`
+        ).join('');
+
+        div.innerHTML = `
+            <div class="fade-in">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="text-5xl ${d.bg} p-4 rounded-2xl">${d.icon}</div>
+                    <h3 class="text-2xl font-serif text-tulip-text">${d.title}</h3>
+                </div>
+                <ul class="ml-1 space-y-1">${tasksHtml}</ul>
+            </div>`;
+    }
+
+    function updateCareTab(tabId) {
+        ['deadheading','foliage','watering','storage'].forEach(t => {
+            const btn = document.getElementById(`tab-${t}`);
+            if (t === tabId) {
+                btn.classList.add('bg-white','shadow-sm','border-tulip-accent','text-tulip-text','font-semibold');
+                btn.classList.remove('hover:bg-white/60','text-gray-600','border-transparent');
+            } else {
+                btn.classList.remove('bg-white','shadow-sm','border-tulip-accent','text-tulip-text','font-semibold');
+                btn.classList.add('hover:bg-white/60','text-gray-600','border-transparent');
+            }
+        });
+
+        const d   = careData[tabId];
+        const div = document.getElementById('care-content');
+        const badgeHtml = d.badge === 'corrected'
+            ? `<span class="badge-corrected">✦ Updated</span>`
+            : d.badge === 'new' ? `<span class="badge-new">✦ New</span>` : '';
+
+        div.innerHTML = `
+            <div class="fade-in">
+                <div class="text-4xl mb-3">${d.icon}</div>
+                <h3 class="text-2xl font-serif text-tulip-text mb-4">${d.title} ${badgeHtml}</h3>
+                <div class="text-base text-gray-700 leading-relaxed">${d.text}</div>
+            </div>`;
+    }
+
+    // ─────────────────────────────────────────────
+    //  CHARTS
+    // ─────────────────────────────────────────────
+
+    function initCharts() {
+        Chart.defaults.font.family = "'Nunito', sans-serif";
+        Chart.defaults.color       = '#5A524D';
+        Chart.defaults.plugins.tooltip.padding         = 10;
+        Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(61,56,53,0.9)';
+
+        // Bar: depth & spacing
+        new Chart(document.getElementById('plantingChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Planting Depth', 'Spacing Between Bulbs'],
+                datasets: [{
+                    label: 'Inches',
+                    data: [7, 5],
+                    backgroundColor: ['#8C6F5A', '#D9777F'],
+                    borderRadius: 8,
+                    barThickness: 60
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ctx.dataIndex === 0
+                                ? ' Standard: 6–8 inches deep'
+                                : ' 4–6 inches apart'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        title: { display: true, text: 'Inches' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+
+    // ─────────────────────────────────────────────
+    //  INIT
+    // ─────────────────────────────────────────────
+
+    window.addEventListener('DOMContentLoaded', () => {
+        updateCalendar('fall');
+        updateCareTab('deadheading');
+        initCharts();
+    });
+    </script>
 </body>
 </html>
